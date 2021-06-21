@@ -13,6 +13,11 @@ export default function Home() {
       align="center"
       justify="center"
     >
+      <Head>
+        <title>Login | FinançApp</title>
+      </Head>
+
+
       <Stack
         w="100%"
         maxW={400}
