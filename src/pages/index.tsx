@@ -1,5 +1,6 @@
 import { Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/react'
 import Head from 'next/head'
+import { Input } from '../components/Form/Input';
 import { Link } from '../components/Link'
 import useWindowDimensions from '../hooks/useWindowDimensions'
 
@@ -36,7 +37,8 @@ export default function Home() {
         >
           <Stack spacing="2rem">
             <Stack spacing="1rem">
-
+              <Input name="email" type="email" label="E-mail" />
+              <Input name="password" type="password" label="Senha" />
             </Stack>
 
             <Stack spacing="1rem">
