@@ -4,12 +4,15 @@ import { Input } from '../components/Form/Input'
 import { Link } from '../components/Link'
 
 import GoogleIcon from '../../public/icons/google.svg'
+import useWindowDimensions from '../hooks/useWindowDimensions'
 
 export default function Home() {
+  const { height } = useWindowDimensions();
+
   return (
     <Flex
       w="100vw"
-      h={window.innerHeight}
+      h={`${height}px`}
       align="center"
       justify="center"
     >
@@ -49,9 +52,9 @@ export default function Home() {
                 <Box h="2px" w="100%" bg="gray.600" />
               </HStack>
 
-              <Button type="button" size="lg">
+              <Button type="button" size="lg" bg="white">
                 <HStack spacing="0.75rem" align="center">
-                  <Img src="./icons/google.svg" colorScheme="white" alt="Google" />
+                  <Img src="./icons/google.svg" alt="Google" />
                   <Text color="black">Entre com sua conta Google</Text>
                 </HStack>
               </Button>
