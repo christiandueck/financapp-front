@@ -1,6 +1,6 @@
 import { Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/react'
 import Head from 'next/head'
-import { Input } from '../components/form/Input'
+import { Input } from '../components/Form/Input'
 import { Link } from '../components/Link'
 
 import GoogleIcon from '../../public/icons/google.svg'
@@ -9,7 +9,7 @@ export default function Home() {
   return (
     <Flex
       w="100vw"
-      h="100vh"
+      h={window.innerHeight}
       align="center"
       justify="center"
     >
@@ -25,7 +25,7 @@ export default function Home() {
         align="start"
         spacing="1.5rem"
       >
-        <Img src="./logo.svg" alt="Finançapp" h="3rem" />
+        <Img src="./logo.svg" alt="FinançApp" h="3rem" />
         <Flex
           as="form"
           w="100%"
@@ -51,7 +51,7 @@ export default function Home() {
 
               <Button type="button" size="lg">
                 <HStack spacing="0.75rem" align="center">
-                  <Img src="./icons/google.svg" colorScheme="" alt="Google" />
+                  <Img src="./icons/google.svg" colorScheme="white" alt="Google" />
                   <Text color="black">Entre com sua conta Google</Text>
                 </HStack>
               </Button>
@@ -59,9 +59,10 @@ export default function Home() {
               <Button type="button" colorScheme="facebook" size="lg">
                 <HStack spacing="0.75rem" align="center">
                   <Img src="./icons/facebook.svg" alt="Facebook" />
-                  <Text color="white">Entre com sua conta Facebook</Text>
+                  <Text>Entre com sua conta Facebook</Text>
                 </HStack>
               </Button>
+
             </Stack>
           </Stack>
         </Flex>
