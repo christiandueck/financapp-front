@@ -1,6 +1,6 @@
 import { Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/react'
 import Head from 'next/head'
-import { Input } from '../components/Form/Input';
+import { Input } from '../components/form/Input';
 import { Link } from '../components/Link'
 import useWindowDimensions from '../hooks/useWindowDimensions'
 
