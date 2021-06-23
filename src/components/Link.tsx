@@ -10,7 +10,7 @@ export function Link({ children, active, ...rest }: LinkProps) {
   return (
     <ChakraLink
       textTransform="uppercase"
-      fontWeight="black"
+      fontWeight="bold"
       color={active ? 'teal.300' : 'white'}
       textDecoration={active ? 'underline' : 'none'}
       _hover={{

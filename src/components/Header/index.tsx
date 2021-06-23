@@ -12,9 +12,9 @@ export function Header() {
       h="4rem"
       align="center"
     >
-      <Img src="./logo.svg" alt="FinançApp" h="3rem" />
+      <Img src="./logo.svg" alt="FinançApp" h="2.5rem" />
       <Stack spacing="2rem" align="center" direction="row" ml="auto">
-        <Stack spacing="2rem" align="center" direction="row" w="100%">
+        <Stack spacing="2rem" align="center" direction="row" w="100%" h="2.5rem">
           <Link active>Dashboard</Link>
           <Link>Contas</Link>
           <Link>Categorias</Link>
@@ -22,7 +22,10 @@ export function Header() {
 
           <AddTransactionButton />
 
-          <Profile name="Christian Dueck" src="https://github.com/christiandueck.png" />
+          <Profile user={{
+            name: "Christian Dueck",
+            profileImage: "https://github.com/christiandueck.png"
+          }} />
         </Stack>
       </Stack>
     </Flex>

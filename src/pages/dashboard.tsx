@@ -6,11 +6,12 @@ export default function Dashboard() {
   return (
     <Stack
       spacing="3rem"
-      mx="auto"
+      align="center"
       my="2rem"
-      w="100%"
+      mx="auto"
       px="1.5rem"
-      maxW={1360}
+      w="100vw"
+      maxW="85rem"
     >
       <Head>
         <title>Dashboard | FinançApp</title>

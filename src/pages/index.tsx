@@ -1,6 +1,6 @@
 import { Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/react'
 import Head from 'next/head'
-import { Input } from '../components/form/Input';
+import { Input } from '../components/Form/Input';
 import { Link } from '../components/Link'
 import useWindowDimensions from '../hooks/useWindowDimensions'
 
@@ -21,12 +21,12 @@ export default function Home() {
 
       <Stack
         w="100%"
-        maxW={400}
+        maxW="22rem"
         m="1.5rem"
         align="start"
-        spacing="1.5rem"
+        spacing="2rem"
       >
-        <Img src="./logo.svg" alt="FinançApp" h="3rem" />
+        <Img src="./logo.svg" alt="FinançApp" h="2.5rem" />
         <Flex
           as="form"
           w="100%"
@@ -35,14 +35,14 @@ export default function Home() {
           borderRadius="1rem"
           flexDir="column"
         >
-          <Stack spacing="2rem">
+          <Stack spacing="1.5rem">
             <Stack spacing="1rem">
               <Input name="email" type="email" label="E-mail" />
               <Input name="password" type="password" label="Senha" />
             </Stack>
 
             <Stack spacing="1rem">
-              <Button type="submit" colorScheme="green" size="lg">Entrar</Button>
+              <Button type="submit" colorScheme="green">Entrar</Button>
 
               <HStack w="100%" h="1.5rem" spacing="1.5rem" align="center">
                 <Box h="2px" w="100%" bg="gray.600" />
@@ -50,14 +50,14 @@ export default function Home() {
                 <Box h="2px" w="100%" bg="gray.600" />
               </HStack>
 
-              <Button type="button" size="lg" bg="white">
+              <Button type="button" bg="white">
                 <HStack spacing="0.75rem" align="center">
                   <Img src="./icons/google.svg" alt="Google" />
                   <Text color="black">Entre com sua conta Google</Text>
                 </HStack>
               </Button>
 
-              <Button type="button" colorScheme="facebook" size="lg">
+              <Button type="button" colorScheme="facebook">
                 <HStack spacing="0.75rem" align="center">
                   <Img src="./icons/facebook.svg" alt="Facebook" />
                   <Text>Entre com sua conta Facebook</Text>
@@ -68,7 +68,7 @@ export default function Home() {
           </Stack>
         </Flex>
 
-        <Flex w="100%" justify="space-between" px="1rem">
+        <Flex w="100%" justify="space-between">
           <Link>Recuperar senha</Link>
           <Link>Novo cadastro</Link>
         </Flex>

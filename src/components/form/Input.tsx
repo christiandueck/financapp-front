@@ -13,7 +13,7 @@ export function Input({ name, label, ...rest }: InputProps) {
         textTransform="uppercase"
         fontSize="sm"
         ml="0.5rem"
-        mb="0.25rem"
+        mb="0"
         color="gray.100"
       >
         {label}:
@@ -27,7 +27,6 @@ export function Input({ name, label, ...rest }: InputProps) {
         _hover={{
           bgColor: 'gray.600'
         }}
-        size="lg"
         {...rest}
       />
     </FormControl>
