@@ -7,9 +7,9 @@ export default function Dashboard() {
     <Stack
       spacing="3rem"
       align="center"
-      my="2rem"
+      my={{ base: "1rem", lg: "2rem" }}
       mx="auto"
-      px="1.5rem"
+      px={{ base: "1rem", lg: "1.5rem" }}
       w="100vw"
       maxW="85rem"
     >

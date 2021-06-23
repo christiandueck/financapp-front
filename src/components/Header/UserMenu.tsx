@@ -11,7 +11,7 @@ export function UserMenu({ name, closeFunction }: UserMenuProps) {
     <Stack
       spacing="0.25rem"
 
-      zIndex={999}
+      zIndex={10}
 
       position="relative"
       bottom="-0.75rem"

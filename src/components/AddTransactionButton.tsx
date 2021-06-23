@@ -7,6 +7,7 @@ export function AddTransactionButton() {
       type="button"
       colorScheme="teal"
       boxShadow="0px 3px 6px rgba(0, 0, 0, 0.5)"
+      w={["100%", "auto"]}
     >
       <Stack
         direction="row"
