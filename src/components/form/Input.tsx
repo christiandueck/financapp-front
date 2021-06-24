@@ -14,7 +14,7 @@ export function Input({ name, label, ...rest }: InputProps) {
         fontSize="sm"
         ml="0.5rem"
         mb="0"
-        color="gray.100"
+        color="gray.400"
       >
         {label}:
       </FormLabel>}
