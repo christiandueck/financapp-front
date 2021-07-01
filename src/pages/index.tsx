@@ -1,18 +1,17 @@
-import { Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/react'
+import { Center, Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/react'
 import Head from 'next/head'
 import { Input } from '../components/Form/Input';
 import { Link } from '../components/Link'
 import useWindowDimensions from '../hooks/useWindowDimensions'
 
 export default function Home() {
-  const { height } = useWindowDimensions();
-
   return (
-    <Flex
-      w="100vw"
-      h={`${height}px`}
-      align="center"
-      justify="center"
+    <Center
+      position="fixed"
+      top={0}
+      bottom={0}
+      left={0}
+      right={0}
     >
       <Head>
         <title>Login | FinançApp</title>
@@ -73,6 +72,6 @@ export default function Home() {
           <Link>Novo cadastro</Link>
         </Flex>
       </Stack>
-    </Flex>
+    </Center>
   )
 }
