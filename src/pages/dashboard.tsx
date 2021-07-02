@@ -1,8 +1,6 @@
 import Head from 'next/head'
-import dynamic from 'next/dynamic'
-import { Box, Center, SimpleGrid, Stack, Text, theme } from '@chakra-ui/react'
+import { Box, Center, SimpleGrid, Stack, Text } from '@chakra-ui/react'
 import { Header } from '../components/Header'
-const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 import { DonutChart } from '../components/Charts/DonutChart'
 import { BarChart } from '../components/Charts/BarChart'
 
