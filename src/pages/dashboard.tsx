@@ -3,50 +3,55 @@ import { Box, Center, SimpleGrid, Stack, Text } from '@chakra-ui/react'
 import { Header } from '../components/Header'
 import { DonutChart } from '../components/Charts/DonutChart'
 import { BarChart } from '../components/Charts/BarChart'
+import { MonthSelector } from '../components/Filter/MonthSelector'
+import { Summary } from '../components/Summary'
+import { useState } from 'react'
+import { useMonth } from '../contexts/MonthContext'
+import { useEffect } from 'react'
 
-const monthlyExpenses = [
-  {
-    name: 'Aluguel',
-    amount: 976,
-    color: '#F51D1D'
-  },
-  {
-    name: 'Transporte',
-    amount: 326.57,
-    color: '#20B74A'
-  },
-  {
-    name: 'Mercado',
-    amount: 628.41,
-    color: '#1DB4F5'
-  },
-  {
-    name: 'Comunicação',
-    amount: 150.99,
-    color: '#961DF5'
-  },
-  {
-    name: 'Luz',
-    amount: 98.03,
-    color: '#F5781D'
+type DashboardData = {
+  month: number;
+  year: number;
+  balance: {
+    income: number;
+    outcome: number;
   }
-]
-
-const montlyBalance = {
-  xaxis: ['Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
-  series: [{
-    name: 'Entradas',
-    data: [3152.45, 3412.3, 3000.12, 2645.98, 3152.45, 3412],
-    color: '#20B74A'
-  }, {
-    name: 'Saídas',
-    data: [1912.47, 3150.34, 2462.78, 3121.1, 1998.83, 2412.67],
-    color: '#FA4F4F'
-  }]
+  monthlyExpenses: {
+    name: string;
+    amount: number;
+    color: string;
+  }[],
+  montlyBalance: {
+    xaxis: string[];
+    series: {
+      name: string;
+      data: number[];
+      color: string;
+    }[]
+  }
 }
 
-
 export default function Dashboard() {
+
+  const { month, year } = useMonth()
+
+  const [data, setData] = useState<DashboardData>()
+
+  useEffect(() => {
+    let jsonData: DashboardData = null
+    try {
+      jsonData = require(`../json/${year}-${month}.json`)
+    } catch {
+      
+    }
+
+    setData(jsonData)
+  }, [month, year])
+
+  useEffect(() => {
+    setData(require('../json/2021-7.json'))
+  }, [])
+
   return (
     <Stack
       spacing="3rem"
@@ -63,13 +68,18 @@ export default function Dashboard() {
         <title>Dashboard | FinançApp</title>
       </Head>
 
+      <MonthSelector />
+
+      {data ? <>
+      <Summary income={data.balance.income} outcome={data.balance.outcome} />
+
       <SimpleGrid flex="1" gap={{ base: "1rem", lg: "2rem" }} minChildWidth="20rem" align="flex-start" w="100%">
         <Box p={{ base: "1rem", lg: "2rem" }} bg="gray.700" borderRadius="0.5rem">
           <Center mb={{ base: "1rem", lg: "2rem" }}>
             <Text fontSize="lg" textTransform="uppercase" color="gray.100" fontWeight="bold">Despesas por categoria</Text>
           </Center>
           
-          <DonutChart data={monthlyExpenses} />
+          <DonutChart data={data.monthlyExpenses} />
         </Box>
 
         <Box p={{ base: "1rem", lg: "2rem" }} bg="gray.700" borderRadius="0.5rem">
@@ -77,9 +87,14 @@ export default function Dashboard() {
             <Text fontSize="lg" textTransform="uppercase" color="gray.100" fontWeight="bold">Entradas e Saídas</Text>
           </Center>
 
-          <BarChart data={montlyBalance} />
+          <BarChart data={data.montlyBalance} />
         </Box>
       </SimpleGrid>
+      </> : 
+      <Center>
+        Não há dados para exibir.
+      </Center>
+      }
     </Stack>
   )
 }

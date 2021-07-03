@@ -1,0 +1,50 @@
+{ 
+  "month": 7,
+  "year": 2021,
+  "balance": {
+    "income": 3412,
+    "outcome": 2180
+  },
+  "monthlyExpenses": [
+    {
+      "name": "Aluguel",
+      "amount": 976,
+      "color": "#F51D1D"
+    },
+    {
+      "name": "Transporte",
+      "amount": 326.57,
+      "color": "#20B74A"
+    },
+    {
+      "name": "Mercado",
+      "amount": 628.41,
+      "color": "#1DB4F5"
+    },
+    {
+      "name": "Comunicação",
+      "amount": 150.99,
+      "color": "#961DF5"
+    },
+    {
+      "name": "Luz",
+      "amount": 98.03,
+      "color": "#F5781D"
+    }
+  ],
+  "montlyBalance": {
+    "xaxis": ["Fev", "Mar", "Abr", "Mai", "Jun", "Jul"],
+    "series": [
+      {
+        "name": "Entradas",
+        "data": [3152.45, 3412.3, 3000.12, 2645.98, 3152.45, 3412],
+        "color": "#20B74A"
+      }, 
+      {
+        "name": "Saídas",
+        "data": [1912.47, 3150.34, 2462.78, 2286.68, 2741.04, 2180],
+        "color": "#FA4F4F"
+      }
+    ]
+  }
+}

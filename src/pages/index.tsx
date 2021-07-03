@@ -2,7 +2,6 @@ import { Center, Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/
 import Head from 'next/head'
 import { Input } from '../components/Form/Input';
 import { Link } from '../components/Link'
-import useWindowDimensions from '../hooks/useWindowDimensions'
 
 export default function Home() {
   return (

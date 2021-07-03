@@ -104,6 +104,11 @@ export function DonutChart({ data }: DonutChartProps) {
               }
             },
             dataLabels: {
+              formatter: function (val: number) {
+                const pVal = val / 100
+                const fVal = pVal.toLocaleString('pt-BR', { style: 'percent', maximumFractionDigits: 0 })
+                return fVal
+              },
               style: {
                 fontSize: '13px'
               }
