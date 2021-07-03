@@ -12,22 +12,22 @@ const monthlyExpenses = [
   },
   {
     name: 'Transporte',
-    amount: 326,
+    amount: 326.57,
     color: '#20B74A'
   },
   {
     name: 'Mercado',
-    amount: 628,
+    amount: 628.41,
     color: '#1DB4F5'
   },
   {
     name: 'Comunicação',
-    amount: 150,
+    amount: 150.99,
     color: '#961DF5'
   },
   {
     name: 'Luz',
-    amount: 98,
+    amount: 98.03,
     color: '#F5781D'
   }
 ]
@@ -36,10 +36,12 @@ const montlyBalance = {
   xaxis: ['Fev', 'Mar', 'Abr', 'Mai', 'Jun', 'Jul'],
   series: [{
     name: 'Entradas',
-    data: [3152, 3412, 3000, 2645, 3152, 3412]
+    data: [3152.45, 3412.3, 3000.12, 2645.98, 3152.45, 3412],
+    color: '#20B74A'
   }, {
     name: 'Saídas',
-    data: [1912, 3150, 2462, 3121, 1998, 2412]
+    data: [1912.47, 3150.34, 2462.78, 3121.1, 1998.83, 2412.67],
+    color: '#FA4F4F'
   }]
 }
 

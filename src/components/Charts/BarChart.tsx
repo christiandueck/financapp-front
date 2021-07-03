@@ -1,3 +1,4 @@
+import { DarkMode } from '@chakra-ui/react'
 import dynamic from 'next/dynamic'
 const Chart = dynamic(() => import('react-apexcharts'), { ssr: false })
 
@@ -7,11 +8,16 @@ interface BarChartProps {
     series: {
       name: string;
       data: number[];
+      color: string;
     }[]
   }
 }
 
 export function BarChart({ data }: BarChartProps) {
+
+  const colors = data.series.map((serie) => {
+    return serie.color
+  })
 
   const barChart = {
     series: data.series,
@@ -65,20 +71,33 @@ export function BarChart({ data }: BarChartProps) {
         labels: {
           style: {
             fontFamily: 'Lato',
-            fontSize: '16px',
+            fontSize: '14px',
             colors: ['#C7C9C9']
+          },
+          formatter: function (val: number) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
           }
         },
       },
       grid: {
         borderColor: '#565E5E',
       },
-      colors: ['#20B74A', '#FA4F4F'],
+      colors: colors,
       fill: {
         opacity: 1
       },
       tooltip: {
-        enabled: false
+        theme: 'dark',
+        fillSeriesColor: true,
+        style: {
+          fontSize: '16px',
+          fontFamily: 'Lato'
+        },
+        y: {
+          formatter: function (val: number) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+          }
+        }
       },
       responsive: [
         {
@@ -94,8 +113,11 @@ export function BarChart({ data }: BarChartProps) {
             yaxis: {
               labels: {
                 style: {
-                  fontSize: '13px',
+                  fontSize: '11px',
                   colors: ['#C7C9C9']
+                },
+                formatter: function (val: number) {
+                  return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL', maximumFractionDigits: 0 })
                 }
               }
             },

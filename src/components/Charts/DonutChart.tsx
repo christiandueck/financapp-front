@@ -86,6 +86,11 @@ export function DonutChart({ data }: DonutChartProps) {
           fontSize: '16px',
           fontFamily: 'Lato'
         },
+        y: {
+          formatter: function (val: number) {
+            return val.toLocaleString('pt-BR', { style: 'currency', currency: 'BRL' })
+          }
+        }
       },
       responsive: [
         {

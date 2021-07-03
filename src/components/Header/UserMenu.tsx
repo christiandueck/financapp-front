@@ -25,6 +25,7 @@ export function UserMenu({ name, closeFunction }: UserMenuProps) {
       textTransform="uppercase"
 
       overflow="hidden"
+      shadow="dark-lg"
     >
       <Flex
         justify="space-between"
