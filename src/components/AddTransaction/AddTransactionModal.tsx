@@ -1,7 +1,10 @@
 import { Flex, Stack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, HStack, Icon, Box } from "@chakra-ui/react"
-import { RiAddLine, RiArrowDownCircleFill, RiArrowLeftRightLine, RiArrowUpCircleFill, RiArrowUpLine } from "react-icons/ri"
+import { RiAddLine, RiArrowDownCircleFill, RiArrowLeftRightLine, RiArrowUpCircleFill, RiArrowUpLine, RiCalendarLine } from "react-icons/ri"
+import { useTransaction } from "../../contexts/TransactionContext"
 import { Input } from "../Form/Input"
 import { SelectButton } from "../Form/SelectButton"
+import { SelectAccount } from "./SelectAccount"
+import { SelectCategory } from "./SelectCategory"
 import { SelectTransaction } from "./SelectTransaction"
 
 interface AddTransactionModalProps {
@@ -10,6 +13,8 @@ interface AddTransactionModalProps {
 }
 
 export function AddTransactionModal({ isOpen, onClose }: AddTransactionModalProps) {
+  const { transaction, transactionDescription } = useTransaction()
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
       <ModalOverlay />
@@ -32,12 +37,22 @@ export function AddTransactionModal({ isOpen, onClose }: AddTransactionModalProp
           <Stack spacing="0.75rem">
             <SelectTransaction />
 
-            <Input name="amount" type="number" label="valor" />
+            <Input name="amount" type="number" step="0.01" label="valor" suffix="R$" />
 
-            <Input name="date" type="date" label="Data da entrada" />
+            <Input name="date" type="date" label={`Data da ${transactionDescription}`} icon={RiCalendarLine} />
 
-            <Input name="account" type="text" label="Conta de destino" />
-            <Input name="category" type="text" label="Categoria" />
+            {transaction !== 'income' &&
+              <SelectAccount name="outcome_account" label="Conta de origem" />
+            }
+
+            {transaction !== 'outcome' &&
+              <SelectAccount name="income_account" label="Conta de destino" />
+            }
+
+            {transaction !== 'transfer' &&
+              <SelectCategory name="category" label="Categoria" transaction={transaction} />
+            }
+
             <Input name="description" type="text" label="Descrição" placeholder="Texto opcional..." />
 
 

@@ -7,7 +7,7 @@ export function MonthSelector() {
 
   return (
     <Center w="100%">
-      <Flex color="gray.50" spacing="3rem" align="center" justify="space-between" w={{ base: "100%", md: "20rem" }}>
+      <Flex color="gray.50" spacing="3rem" align="center" justify="space-between" w={{ base: "100%", md: "20rem" }} my="-0.5rem">
         <Button
           variant="unstyled"
           _hover={{ color: 'gray.400' }}

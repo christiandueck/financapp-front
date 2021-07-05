@@ -54,7 +54,7 @@ export default function Dashboard() {
 
   return (
     <Stack
-      spacing="3rem"
+      spacing={{ base: "1.5rem", lg: "3rem" }}
       align="center"
       my={{ base: "1rem", lg: "2rem" }}
       mx="auto"

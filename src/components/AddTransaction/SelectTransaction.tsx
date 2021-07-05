@@ -1,22 +1,20 @@
 import { Stack, Flex, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 import { RiArrowDownCircleFill, RiArrowLeftRightLine, RiArrowUpCircleFill } from 'react-icons/ri'
+import { useTransaction } from '../../contexts/TransactionContext'
 import { SelectButton } from '../Form/SelectButton'
 
-type Transaction = 'income' | 'outcome' | 'transfer'
-
 export function SelectTransaction() {
-  const [selectedTransaction, setSelectedTransaction] = useState<Transaction>('income')
-
-  function selectTransaction(transaction: Transaction) {
-    setSelectedTransaction(transaction)
-  }
+  const { transaction, selectTransaction } = useTransaction()
 
   return (
     <Stack spacing="0">
       <Text fontSize="sm" color="gray.400" pl="0.5rem">TIPO DE TRANSAÇÃO:</Text>
       <Flex
         flexWrap="wrap"
+        css={{
+          gap: '0.5rem'
+        }}
       >
 
         <SelectButton
@@ -24,9 +22,8 @@ export function SelectTransaction() {
             icon: RiArrowUpCircleFill,
             color: "green.500"
           }}
-          active={selectedTransaction === 'income'}
+          active={transaction === 'income'}
           onClick={() => selectTransaction('income')}
-          margin
         >Entrada</SelectButton>
 
         <SelectButton
@@ -34,9 +31,8 @@ export function SelectTransaction() {
             icon: RiArrowDownCircleFill,
             color: "red.500"
           }}
-          active={selectedTransaction === 'outcome'}
+          active={transaction === 'outcome'}
           onClick={() => selectTransaction('outcome')}
-          margin
         >Saída</SelectButton>
 
         <SelectButton
@@ -44,9 +40,8 @@ export function SelectTransaction() {
             icon: RiArrowLeftRightLine,
             color: "purple.300"
           }}
-          active={selectedTransaction === 'transfer'}
+          active={transaction === 'transfer'}
           onClick={() => selectTransaction('transfer')}
-          margin
         >Transferência</SelectButton>
 
       </Flex>

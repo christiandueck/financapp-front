@@ -1,5 +1,6 @@
 import { Button, Stack, Icon, Text, useDisclosure } from "@chakra-ui/react"
 import { RiAddLine } from "react-icons/ri"
+import { TransactionContextProvider } from "../../contexts/TransactionContext"
 import { AddTransactionModal } from "./AddTransactionModal"
 
 export function AddTransactionButton() {
@@ -30,7 +31,9 @@ export function AddTransactionButton() {
         </Stack>
       </Button>
 
-      <AddTransactionModal isOpen={isOpen} onClose={onClose} />
+      <TransactionContextProvider>
+        <AddTransactionModal isOpen={isOpen} onClose={onClose} />
+      </TransactionContextProvider>
     </>
   )
 }

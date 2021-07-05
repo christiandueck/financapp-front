@@ -9,10 +9,9 @@ interface SelectButtonProps {
   }
   active?: boolean;
   onClick: () => void;
-  margin?: boolean;
 }
 
-export function SelectButton({ children, icon, active, onClick, margin }: SelectButtonProps) {
+export function SelectButton({ children, icon, active, onClick }: SelectButtonProps) {
   if (active) {
     return (
       <Flex
@@ -23,7 +22,6 @@ export function SelectButton({ children, icon, active, onClick, margin }: Select
         borderRadius="0.5rem"
         cursor="pointer"
         onClick={onClick}
-        m={margin ? "0 1rem 0.5rem 0" : "0"}
       >
         <HStack spacing="0.5rem">
           {icon && <Icon as={icon.icon} fontSize="1.5rem" color={icon.color || "white"} />}
@@ -42,7 +40,6 @@ export function SelectButton({ children, icon, active, onClick, margin }: Select
       borderRadius="0.5rem"
       cursor="pointer"
       onClick={onClick}
-      m={margin ? "0 1rem 0.5rem 0" : "0"}
     >
       <HStack spacing="0.5rem">
         {icon && <Icon as={icon.icon} fontSize="1.5rem" color={icon.color || "white"} />}

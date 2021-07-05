@@ -12,7 +12,7 @@ export function NavBar() {
   })
 
   return (
-    <Stack spacing="2rem" align={["start", "center"]} direction={["column", "row"]}>
+    <Stack spacing="2rem" align={{ base: "start", md: "center" }} direction={{ base: "column", md: "row" }}>
       <Link icon={RiBarChart2Line} href="/dashboard">Dashboard</Link>
 
       <Link icon={RiBankLine} href="/accounts">Contas</Link>
