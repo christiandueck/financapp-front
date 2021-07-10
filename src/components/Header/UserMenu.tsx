@@ -1,4 +1,5 @@
-import { Stack, Flex, Text, IconButton, Link, HStack, Icon } from "@chakra-ui/react"
+import { Stack, Flex, Text, IconButton, Link as ChakraLink, HStack, Icon } from "@chakra-ui/react"
+import Link from "next/link"
 import { RiCloseLine, RiLogoutCircleRLine, RiUserSettingsLine } from "react-icons/ri"
 
 interface UserMenuProps {
@@ -46,22 +47,26 @@ export function UserMenu({ name, closeFunction }: UserMenuProps) {
         />
       </Flex>
 
-      <Link px="1rem" _hover={{ bg: "gray.600" }} borderBottom="1px solid #565E5E">
-        <HStack spacing="0.75rem">
-          <Icon as={RiUserSettingsLine} />
-          <Text lineHeight="3rem">
-            Alterar dados pessoais
-          </Text>
-        </HStack>
+      <Link href="" passHref>
+        <ChakraLink px="1rem" _hover={{ bg: "gray.600" }} borderBottom="1px solid #565E5E">
+          <HStack spacing="0.75rem">
+            <Icon as={RiUserSettingsLine} />
+            <Text lineHeight="3rem">
+              Alterar dados pessoais
+            </Text>
+          </HStack>
+        </ChakraLink>
       </Link>
 
-      <Link px="1rem" _hover={{ bg: "gray.600" }}>
-        <HStack spacing="0.75rem">
-          <Icon as={RiLogoutCircleRLine} />
-          <Text lineHeight="3rem">
-            Sair
-          </Text>
-        </HStack>
+      <Link href="/" passHref>
+        <ChakraLink px="1rem" _hover={{ bg: "gray.600" }}>
+          <HStack spacing="0.75rem">
+            <Icon as={RiLogoutCircleRLine} />
+            <Text lineHeight="3rem">
+              Sair
+            </Text>
+          </HStack>
+        </ChakraLink>
       </Link>
     </Stack>
   )

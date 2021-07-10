@@ -17,6 +17,7 @@ export function SelectButton({ children, icon, active, onClick }: SelectButtonPr
       <Flex
         h="3rem"
         align="center"
+        justify="center"
         px="1rem"
         bg="gray.900"
         borderRadius="0.5rem"
@@ -35,6 +36,7 @@ export function SelectButton({ children, icon, active, onClick }: SelectButtonPr
     <Flex
       h="3rem"
       align="center"
+      justify="center"
       px="1rem"
       boxShadow="inset 0px 0px 0px 3px #565E5E"
       borderRadius="0.5rem"

@@ -1,7 +1,7 @@
 import { Stack } from "@chakra-ui/layout"
 
 import { RiArrowLeftRightLine, RiBankLine, RiBarChart2Line, RiFunctionLine } from "react-icons/ri"
-import { Link } from "../Link"
+import { NavLink } from "../NavLink"
 import { AddTransactionButton } from "../AddTransaction/AddTransactionButton"
 import { useBreakpointValue } from "@chakra-ui/react"
 
@@ -13,11 +13,11 @@ export function NavBar() {
 
   return (
     <Stack spacing="2rem" align={{ base: "start", md: "center" }} direction={{ base: "column", md: "row" }}>
-      <Link icon={RiBarChart2Line} href="/dashboard">Dashboard</Link>
+      <NavLink href="/dashboard" icon={RiBarChart2Line}>Dashboard</NavLink>
 
-      <Link icon={RiBankLine} href="/accounts">Contas</Link>
-      <Link icon={RiFunctionLine} href="/categories">Categorias</Link>
-      <Link icon={RiArrowLeftRightLine} href="/transactions">Transações</Link>
+      <NavLink href="/accounts" icon={RiBankLine}>Contas</NavLink>
+      <NavLink href="/categories" icon={RiFunctionLine}>Categorias</NavLink>
+      <NavLink href="/transactions" icon={RiArrowLeftRightLine}>Transações</NavLink>
 
       <AddTransactionButton />
     </Stack>

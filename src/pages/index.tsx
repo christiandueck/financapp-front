@@ -1,9 +1,39 @@
 import { Center, Flex, Stack, HStack, Img, Text, Button, Box } from '@chakra-ui/react'
+import { SubmitHandler, useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
 import Head from 'next/head'
 import { Input } from '../components/Form/Input';
-import { Link } from '../components/Link'
+import { NavLink } from '../components/NavLink'
+import { useRouter } from 'next/dist/client/router'
+
+type SignInFormData = {
+  email: string;
+  password: string;
+}
+
+const signInFormSchema = yup.object().shape({
+  email: yup.string().required('E-mail obrigatório!').email('E-mail inválido!'),
+  password: yup.string().required('Senha obrigatória!')
+})
 
 export default function Home() {
+
+  const { register, handleSubmit, formState } = useForm({
+    resolver: yupResolver(signInFormSchema)
+  })
+
+  const router = useRouter()
+
+  const handleSignIn: SubmitHandler<SignInFormData> = async (values) => {
+    await new Promise(resolve => setTimeout(resolve, 2000))
+
+    console.log(values)
+    router.push('/dashboard')
+  }
+
+  const { errors } = formState
+
   return (
     <Center
       position="fixed"
@@ -32,15 +62,29 @@ export default function Home() {
           p="1.25rem"
           borderRadius="1rem"
           flexDir="column"
+          onSubmit={handleSubmit(handleSignIn)}
         >
           <Stack spacing="1.5rem">
             <Stack spacing="1rem">
-              <Input name="email" type="email" label="E-mail" />
-              <Input name="password" type="password" label="Senha" />
+              <Input
+                name="email"
+                type="email"
+                label="E-mail"
+                error={errors.email}
+                {...register('email')}
+              />
+
+              <Input
+                name="password"
+                type="password"
+                label="Senha"
+                error={errors.password}
+                {...register('password')}
+              />
             </Stack>
 
             <Stack spacing="1rem">
-              <Button type="submit" colorScheme="green">Entrar</Button>
+              <Button type="submit" colorScheme="green" isLoading={formState.isSubmitting}>Entrar</Button>
 
               <HStack w="100%" h="1.5rem" spacing="1.5rem" align="center">
                 <Box h="2px" w="100%" bg="gray.600" />
@@ -67,8 +111,8 @@ export default function Home() {
         </Flex>
 
         <Flex w="100%" justify="space-between">
-          <Link>Recuperar senha</Link>
-          <Link>Novo cadastro</Link>
+          <NavLink href="">Recuperar senha</NavLink>
+          <NavLink href="">Novo cadastro</NavLink>
         </Flex>
       </Stack>
     </Center>
