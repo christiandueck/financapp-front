@@ -15,7 +15,7 @@ export function SelectButton({ children, icon, active, onClick }: SelectButtonPr
   if (active) {
     return (
       <Flex
-        h="3rem"
+        h="2.75rem"
         align="center"
         justify="center"
         px="1rem"
@@ -34,7 +34,7 @@ export function SelectButton({ children, icon, active, onClick }: SelectButtonPr
 
   return (
     <Flex
-      h="3rem"
+      h="2.75rem"
       align="center"
       justify="center"
       px="1rem"

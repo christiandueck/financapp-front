@@ -83,7 +83,7 @@ export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransa
         />
 
         <ModalBody p="0">
-          <Stack spacing="0.75rem">
+          <Stack spacing="1.5rem">
 
             <FormControl>
               <FormLabel
