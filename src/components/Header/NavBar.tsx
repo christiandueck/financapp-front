@@ -8,11 +8,11 @@ import { useBreakpointValue } from "@chakra-ui/react"
 export function NavBar() {
   const isMobile = useBreakpointValue({
     base: true,
-    lg: false,
+    sm: false,
   })
 
   return (
-    <Stack spacing="2rem" align={{ base: "start", md: "center" }} direction={{ base: "column", md: "row" }}>
+    <Stack spacing="2rem" align={{ base: "start", lg: "center" }} direction={{ base: "column", lg: "row" }}>
       <NavLink href="/dashboard" icon={RiBarChart2Line}>Dashboard</NavLink>
 
       <NavLink href="/accounts" icon={RiBankLine}>Contas</NavLink>

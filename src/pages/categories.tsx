@@ -133,7 +133,6 @@ export default function Categories() {
         px={{ base: "1rem", lg: "1.5rem" }}
         pb={{ base: "3.5rem", md: 0 }}
         w="100vw"
-        minH="95vh"
         maxW="85rem"
         position="relative"
       >
