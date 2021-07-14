@@ -8,6 +8,7 @@ interface CategoryTableProps {
     type: 'income' | 'outcome' | string;
     name: string;
     color: string;
+    active?: boolean;
   }[]
 }
 
