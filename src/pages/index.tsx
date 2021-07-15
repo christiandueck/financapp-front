@@ -13,8 +13,8 @@ type SignInFormData = {
 }
 
 const signInFormSchema = yup.object().shape({
-  email: yup.string().required('E-mail obrigatório!').email('E-mail inválido!'),
-  password: yup.string().required('Senha obrigatória!')
+  email: yup.string().required('E-mail é obrigatório').email('E-mail inválido'),
+  password: yup.string().required('Senha é obrigatória')
 })
 
 export default function Home() {
@@ -111,8 +111,8 @@ export default function Home() {
         </Flex>
 
         <Flex w="100%" justify="space-between">
-          <NavLink href="">Recuperar senha</NavLink>
-          <NavLink href="">Novo cadastro</NavLink>
+          <NavLink href="/user/password/recover">Recuperar senha</NavLink>
+          <NavLink href="/user/register">Novo cadastro</NavLink>
         </Flex>
       </Stack>
     </Center>

@@ -8,7 +8,7 @@ import { Summary } from '../components/Summary'
 import { useState } from 'react'
 import { useMonth } from '../contexts/MonthContext'
 import { useEffect } from 'react'
-import { AddTransactionButton } from '../components/AddTransaction/AddTransactionButton'
+import { AddTransactionButton } from '../components/Transaction/AddTransactionButton'
 
 type DashboardData = {
   month: number;

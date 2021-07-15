@@ -2,7 +2,7 @@ import { Stack } from "@chakra-ui/layout"
 
 import { RiArrowLeftRightLine, RiBankLine, RiBarChart2Line, RiFunctionLine } from "react-icons/ri"
 import { NavLink } from "../NavLink"
-import { AddTransactionButton } from "../AddTransaction/AddTransactionButton"
+import { AddTransactionButton } from "../Transaction/AddTransactionButton"
 import { useBreakpointValue } from "@chakra-ui/react"
 
 export function NavBar() {

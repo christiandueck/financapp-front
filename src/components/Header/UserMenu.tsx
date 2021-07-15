@@ -1,6 +1,8 @@
-import { Stack, Flex, Text, IconButton, Link as ChakraLink, HStack, Icon } from "@chakra-ui/react"
+import { Stack, Flex, Text, IconButton, Link as ChakraLink, HStack, Icon, useDisclosure } from "@chakra-ui/react"
 import Link from "next/link"
+import { useEffect } from "react"
 import { RiCloseLine, RiLogoutCircleRLine, RiUserSettingsLine } from "react-icons/ri"
+import { ChangeUserDataModal } from "../User/ChangeUserDataModal"
 
 interface UserMenuProps {
   name: string;
@@ -8,6 +10,8 @@ interface UserMenuProps {
 }
 
 export function UserMenu({ name, closeFunction }: UserMenuProps) {
+  const { isOpen, onOpen, onClose } = useDisclosure()
+
   return (
     <Stack
       spacing="0.25rem"
@@ -47,16 +51,14 @@ export function UserMenu({ name, closeFunction }: UserMenuProps) {
         />
       </Flex>
 
-      <Link href="" passHref>
-        <ChakraLink px="1rem" _hover={{ bg: "gray.600" }} borderBottom="1px solid #565E5E">
-          <HStack spacing="0.75rem">
-            <Icon as={RiUserSettingsLine} />
-            <Text lineHeight="3rem">
-              Alterar dados pessoais
-            </Text>
-          </HStack>
-        </ChakraLink>
-      </Link>
+      <ChakraLink px="1rem" _hover={{ bg: "gray.600" }} borderBottom="1px solid #565E5E" onClick={onOpen}>
+        <HStack spacing="0.75rem">
+          <Icon as={RiUserSettingsLine} />
+          <Text lineHeight="3rem">
+            Alterar dados pessoais
+          </Text>
+        </HStack>
+      </ChakraLink>
 
       <Link href="/" passHref>
         <ChakraLink px="1rem" _hover={{ bg: "gray.600" }}>
@@ -68,6 +70,13 @@ export function UserMenu({ name, closeFunction }: UserMenuProps) {
           </HStack>
         </ChakraLink>
       </Link>
+
+      <ChangeUserDataModal isOpen={isOpen} onClose={onClose} user={
+        {
+          name: 'Christian Dueck',
+          email: 'christian@dueck.com.br'
+        }
+      } />
     </Stack>
   )
 }
