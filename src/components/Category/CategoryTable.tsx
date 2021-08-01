@@ -3,16 +3,25 @@ import { RiEditLine, RiDeleteBin2Line } from 'react-icons/ri'
 
 interface CategoryTableProps {
   isMobile: boolean;
-  categories: {
-    id: string;
-    type: 'income' | 'outcome' | string;
+  categoryType: 'income' | 'outcome';
+  activeCategories: 1 | 0;
+  data: {
+    id: string | number;
     name: string;
     color: string;
-    active?: boolean;
+    type: 'income' | 'outcome';
+    active?: 1 | 0;
   }[]
 }
 
-export function CategoryTable({ isMobile, categories }: CategoryTableProps) {
+
+export function CategoryTable({ isMobile, data, categoryType, activeCategories }: CategoryTableProps) {
+
+  const categories = data.filter((category) => (
+    category.type === categoryType
+    && category.active === activeCategories
+  ))
+
   return (
     <Table>
       <Thead>
@@ -49,7 +58,8 @@ export function CategoryTable({ isMobile, categories }: CategoryTableProps) {
       </Thead>
 
       <Tbody>
-        {categories.map(category => (
+        {categories.map(category =>
+        (
           <Tr key={category.id}>
             <Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200">
               {isMobile
@@ -75,7 +85,8 @@ export function CategoryTable({ isMobile, categories }: CategoryTableProps) {
               </Flex>
             </Td>
           </Tr>
-        ))}
+        )
+        )}
       </Tbody>
     </Table>
   )

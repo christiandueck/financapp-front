@@ -4,6 +4,10 @@ import { RiAddLine, RiArrowDownCircleFill, RiArrowUpCircleFill } from "react-ico
 import { Input } from "../Form/Input"
 import { SelectButton } from "../Form/SelectButton"
 import { SelectColorButton } from "../Form/SelectColorButton"
+import { SubmitHandler, useForm } from 'react-hook-form'
+import * as yup from 'yup'
+import { yupResolver } from '@hookform/resolvers/yup'
+import { api } from "../../services/api"
 
 interface AddTransactionModalProps {
   isOpen: boolean;
@@ -60,14 +64,51 @@ const colors = [
   }
 ]
 
+type AddCategoryFormData = {
+  user?: string;
+  type: 'income' | 'outcome';
+  name: string;
+  color: string;
+}
+
+const addCategoryFormSchema = yup.object().shape({
+  name: yup.string().required('Nome é obrigatório')
+})
+
 export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransactionModalProps) {
   const [categoryType, setCategoryType] = useState(type)
   const [color, setColor] = useState<Color>(colors[0]);
 
+  const { register, handleSubmit, formState } = useForm({
+    resolver: yupResolver(addCategoryFormSchema)
+  })
+
+  const handleAddCategory: SubmitHandler<AddCategoryFormData> = async (values) => {
+    const category = {
+      ...values,
+      type: categoryType,
+      color: color.name,
+      user: 'Christian'
+    }
+
+    await api.post('category/insert', category)
+
+    onClose()
+  }
+
+  const { errors } = formState
+
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
       <ModalOverlay />
-      <ModalContent bg="gray.800" p="1.5rem" overflow="hidden" borderRadius="1rem">
+      <ModalContent
+        bg="gray.800"
+        p="1.5rem"
+        overflow="hidden"
+        borderRadius="1rem"
+        as="form"
+        onSubmit={handleSubmit(handleAddCategory)}
+      >
 
         <ModalHeader p="0" mb="2rem">
           <HStack>
@@ -114,10 +155,9 @@ export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransa
                   onClick={() => setCategoryType('outcome')}
                 >Saída</SelectButton>
               </SimpleGrid>
-              <input type="hidden" name="type" value={categoryType} />
             </FormControl>
 
-            <Input name="name" type="text" label="Nome" />
+            <Input name="name" type="text" label="Nome" error={errors.name} {...register('name')} />
 
             <FormControl>
               <FormLabel
@@ -138,14 +178,13 @@ export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransa
                   />
                 ))}
               </Flex>
-              <input type="hidden" name="color" value={color.id} />
             </FormControl>
 
           </Stack>
         </ModalBody>
 
         <ModalFooter p="0" mt="2.5rem">
-          <Button colorScheme="green" onClick={onClose} w="100%">
+          <Button type="submit" isLoading={formState.isSubmitting} colorScheme="green" w="100%">
             Salvar
           </Button>
         </ModalFooter>
