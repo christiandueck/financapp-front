@@ -85,6 +85,8 @@ export function AddCategoryModal({ type = 'income', category = null }: AddTransa
       setValue('name', category.name)
     } else {
       setCategoryType(type)
+      setValue('name', '')
+      setActiveColor(colors[0])
     }
   }, [isOpen])
 

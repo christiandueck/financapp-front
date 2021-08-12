@@ -8,7 +8,7 @@ interface AddCategoryButtonProps {
 }
 
 export function AddCategoryButton({ type = 'income' }: AddCategoryButtonProps) {
-  const { onOpen, editCategory } = useCategory()
+  const { openAddCategoryModal, editCategory } = useCategory()
 
   return (
     <>
@@ -17,7 +17,7 @@ export function AddCategoryButton({ type = 'income' }: AddCategoryButtonProps) {
         colorScheme="green"
         boxShadow="0px 3px 6px rgba(0, 0, 0, 0.5)"
         w={["100%", "auto"]}
-        onClick={onOpen}
+        onClick={openAddCategoryModal}
       >
         <Stack
           direction="row"

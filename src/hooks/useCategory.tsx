@@ -22,8 +22,8 @@ type CategoryContextData = {
   isLoading: boolean;
   editCategory: Category;
   isOpen: boolean;
-  onOpen: () => void;
   onClose: () => void;
+  openAddCategoryModal: () => void;
   openEditCategoryModal: (category: Category) => void;
   reactivateCategory: () => void;
 }
@@ -57,6 +57,11 @@ export function CategoryContextProvider({ children }: CategoryContextProviderPro
   const [editCategory, setEditCategory] = useState<Category>(null)
 
   const { isOpen, onOpen, onClose } = useDisclosure()
+
+  function openAddCategoryModal() {
+    setEditCategory(null);
+    onOpen()
+  }
 
   function openEditCategoryModal(category: Category) {
     setEditCategory(category);
@@ -110,8 +115,8 @@ export function CategoryContextProvider({ children }: CategoryContextProviderPro
       isLoading,
       editCategory,
       isOpen,
-      onOpen,
       onClose,
+      openAddCategoryModal,
       openEditCategoryModal,
       reactivateCategory
     }}>
