@@ -1,15 +1,14 @@
 import Head from 'next/head'
-import { Stack, SimpleGrid, Flex, Text, Icon, Table, Thead, Tbody, Tr, Th, Td, Circle, useBreakpointValue, Button, Spinner } from '@chakra-ui/react'
+import { Stack, SimpleGrid, Flex, Text, Icon, useBreakpointValue, Spinner } from '@chakra-ui/react'
 import { Header } from '../components/Header'
 import { AddCategoryButton } from '../components/Category/AddCategoryButton'
 import { SelectButton } from '../components/Form/SelectButton'
-import { RiArrowDownCircleFill, RiArrowUpCircleFill, RiToggleFill, RiToggleLine, RiEditLine, RiDeleteBin2Line } from 'react-icons/ri'
-import { useState } from 'react'
+import { RiArrowDownCircleFill, RiArrowUpCircleFill, RiToggleFill, RiToggleLine } from 'react-icons/ri'
+import { useEffect, useState } from 'react'
 import { CategoryTable } from '../components/Category/CategoryTable'
-import { useQuery } from 'react-query'
-import { api } from '../services/api'
+import { useCategory } from '../hooks/useCategory'
 
-type Category = 'income' | 'outcome'
+type CategoryType = 'income' | 'outcome'
 
 export default function Categories() {
   const isMobile = useBreakpointValue({
@@ -17,18 +16,19 @@ export default function Categories() {
     md: false,
   })
 
-  const [categoryType, setCategoryType] = useState<Category>('income')
+  const { listCategories, categoriesList, isLoading } = useCategory()
+  const [categoryType, setCategoryType] = useState<CategoryType>('income')
   const [activeCategories, setActiveCategories] = useState(true)
 
   function toggleActiveCategories() {
     setActiveCategories(!activeCategories)
   }
 
-  const { data, isLoading, error } = useQuery('categories', async () => {
-    const { data } = await api.get('category/all')
+  const error = false;
 
-    return data;
-  })
+  useEffect(() => {
+    listCategories()
+  }, [])
 
   return (
     <>
@@ -106,7 +106,7 @@ export default function Categories() {
             </Text>
           </Flex>
         ) : (
-          <CategoryTable data={data} categoryType={categoryType} activeCategories={activeCategories ? 1 : 0} isMobile={isMobile} />
+          <CategoryTable data={categoriesList} categoryType={categoryType} activeCategories={activeCategories} isMobile={isMobile} />
         )}
       </Stack>
 

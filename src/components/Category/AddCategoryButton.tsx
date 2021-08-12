@@ -1,5 +1,6 @@
 import { Button, Stack, Icon, Text, useDisclosure } from "@chakra-ui/react"
 import { RiAddLine } from "react-icons/ri"
+import { useCategory } from "../../hooks/useCategory"
 import { AddCategoryModal } from "./AddCategoryModal"
 
 interface AddCategoryButtonProps {
@@ -7,7 +8,7 @@ interface AddCategoryButtonProps {
 }
 
 export function AddCategoryButton({ type = 'income' }: AddCategoryButtonProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+  const { onOpen, editCategory } = useCategory()
 
   return (
     <>
@@ -32,7 +33,7 @@ export function AddCategoryButton({ type = 'income' }: AddCategoryButtonProps) {
         </Stack>
       </Button>
 
-      <AddCategoryModal isOpen={isOpen} onClose={onClose} type={type} />
+      <AddCategoryModal type={type} category={editCategory} />
     </>
   )
 }

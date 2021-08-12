@@ -1,26 +1,22 @@
 import { Stack, Flex, Text, Icon, Table, Thead, Tbody, Tr, Th, Td, Circle, Button } from '@chakra-ui/react'
 import { RiEditLine, RiDeleteBin2Line } from 'react-icons/ri'
+import { api } from '../../services/api'
+import { Category, useCategory } from '../../hooks/useCategory';
 
 interface CategoryTableProps {
   isMobile: boolean;
   categoryType: 'income' | 'outcome';
-  activeCategories: 1 | 0;
-  data: {
-    id: string | number;
-    name: string;
-    color: string;
-    type: 'income' | 'outcome';
-    active?: 1 | 0;
-  }[]
+  activeCategories: boolean;
+  data: Category[]
 }
 
 
 export function CategoryTable({ isMobile, data, categoryType, activeCategories }: CategoryTableProps) {
+  const { deactivateCategory, openEditCategoryModal } = useCategory()
 
-  const categories = data.filter((category) => (
-    category.type === categoryType
-    && category.active === activeCategories
-  ))
+  const categories = data?.filter(category => (
+    category.active === activeCategories && category.type === categoryType && category
+  ));
 
   return (
     <Table>
@@ -58,7 +54,7 @@ export function CategoryTable({ isMobile, data, categoryType, activeCategories }
       </Thead>
 
       <Tbody>
-        {categories.map(category =>
+        {categories?.map(category =>
         (
           <Tr key={category.id}>
             <Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200">
@@ -74,14 +70,16 @@ export function CategoryTable({ isMobile, data, categoryType, activeCategories }
             {!isMobile && <Td borderColor="whiteAlpha.200"><Circle h="1.5rem" w="1.5rem" bg={category.color} /></Td>}
 
             <Td w="4rem" borderColor="whiteAlpha.200" h="3rem" py={0} px={{ base: "0.5rem", md: "1rem", lg: "2rem" }}>
-              <Flex>
+              <Flex justify="center">
                 <Button variant="unstyled">
-                  <Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
+                  <Icon as={RiEditLine} w="1.5rem" h="1.5rem" onClick={() => openEditCategoryModal(category)} />
                 </Button>
 
-                <Button variant="unstyled">
-                  <Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
-                </Button>
+                {category.active &&
+                  <Button variant="unstyled">
+                    <Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" onClick={() => deactivateCategory(category.id)} />
+                  </Button>
+                }
               </Flex>
             </Td>
           </Tr>

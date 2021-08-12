@@ -86,7 +86,7 @@ export default function Home() {
             <Stack spacing="1rem">
               <Button type="submit" colorScheme="green" isLoading={formState.isSubmitting}>Entrar</Button>
 
-              <HStack w="100%" h="1.5rem" spacing="1.5rem" align="center">
+              {/*<HStack w="100%" h="1.5rem" spacing="1.5rem" align="center">
                 <Box h="2px" w="100%" bg="gray.600" />
                 <Text color="gray.400">ou</Text>
                 <Box h="2px" w="100%" bg="gray.600" />
@@ -104,7 +104,7 @@ export default function Home() {
                   <Img src="./icons/facebook.svg" alt="Facebook" />
                   <Text>Entre com sua conta Facebook</Text>
                 </HStack>
-              </Button>
+              </Button>*/}
 
             </Stack>
           </Stack>

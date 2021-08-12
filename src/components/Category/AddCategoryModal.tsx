@@ -1,67 +1,28 @@
 import { Stack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, HStack, Icon, SimpleGrid, FormLabel, FormControl, Flex } from "@chakra-ui/react"
-import { useState } from "react"
-import { RiAddLine, RiArrowDownCircleFill, RiArrowUpCircleFill } from "react-icons/ri"
+import { useEffect, useState } from "react"
+import { RiAddLine, RiArrowDownCircleFill, RiArrowUpCircleFill, RiEditLine } from "react-icons/ri"
 import { Input } from "../Form/Input"
 import { SelectButton } from "../Form/SelectButton"
 import { SelectColorButton } from "../Form/SelectColorButton"
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { api } from "../../services/api"
+import { Category, useCategory } from "../../hooks/useCategory"
 
 interface AddTransactionModalProps {
-  isOpen: boolean;
-  onClose: () => void;
   type?: 'income' | 'outcome'
-}
-
-type Color = {
-  id: number;
-  name: string;
-  hex: string;
+  category?: Category;
 }
 
 const colors = [
-  {
-    id: 1,
-    name: '#4267B2',
-    hex: '#4267B2'
-  },
-  {
-    id: 2,
-    name: '#1DB4F5',
-    hex: '#1DB4F5'
-  },
-  {
-    id: 4,
-    name: '#20B74A',
-    hex: '#20B74A'
-  },
-  {
-    id: 6,
-    name: '#9DB410',
-    hex: '#9DB410'
-  },
-  {
-    id: 7,
-    name: '#F5781D',
-    hex: '#F5781D'
-  },
-  {
-    id: 8,
-    name: '#F51D1D',
-    hex: '#F51D1D'
-  },
-  {
-    id: 10,
-    name: '#961DF5',
-    hex: '#961DF5'
-  },
-  {
-    id: 11,
-    name: '#C289EF',
-    hex: '#C289EF'
-  }
+  '#4267B2',
+  '#1DB4F5',
+  '#20B74A',
+  '#9DB410',
+  '#F5781D',
+  '#F51D1D',
+  '#961DF5',
+  '#C289EF'
 ]
 
 type AddCategoryFormData = {
@@ -75,28 +36,57 @@ const addCategoryFormSchema = yup.object().shape({
   name: yup.string().required('Nome é obrigatório')
 })
 
-export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransactionModalProps) {
+export function AddCategoryModal({ type = 'income', category = null }: AddTransactionModalProps) {
+  const { isOpen, onClose, addCategory, updateCategory, deactivateCategory, reactivateCategory } = useCategory()
   const [categoryType, setCategoryType] = useState(type)
-  const [color, setColor] = useState<Color>(colors[0]);
+  const [activeColor, setActiveColor] = useState(colors[0]);
 
-  const { register, handleSubmit, formState } = useForm({
+  const { register, handleSubmit, formState, setValue } = useForm({
     resolver: yupResolver(addCategoryFormSchema)
   })
 
-  const handleAddCategory: SubmitHandler<AddCategoryFormData> = async (values) => {
-    const category = {
-      ...values,
-      type: categoryType,
-      color: color.name,
-      user: 'Christian'
-    }
+  const handleSaveCategory: SubmitHandler<AddCategoryFormData> = async (values) => {
+    if (category !== null) {
+      const updatedCategory = {
+        ...values,
+        id: category.id,
+        type: categoryType,
+        color: activeColor,
+        active: category.active
+      }
 
-    await api.post('category/insert', category)
+      updateCategory(updatedCategory);
+
+    } else {
+
+      const newCategory = {
+        ...values,
+        type: categoryType,
+        color: activeColor,
+        user: 'Christian'
+      }
+
+      addCategory(newCategory);
+    }
 
     onClose()
   }
 
+  function reactivate() {
+    reactivateCategory()
+  }
+
   const { errors } = formState
+
+  useEffect(() => {
+    if (category !== null) {
+      setCategoryType(category.type)
+      setActiveColor(category.color)
+      setValue('name', category.name)
+    } else {
+      setCategoryType(type)
+    }
+  }, [isOpen])
 
   return (
     <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
@@ -107,13 +97,13 @@ export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransa
         overflow="hidden"
         borderRadius="1rem"
         as="form"
-        onSubmit={handleSubmit(handleAddCategory)}
+        onSubmit={handleSubmit(handleSaveCategory)}
       >
 
         <ModalHeader p="0" mb="2rem">
           <HStack>
-            <Icon as={RiAddLine} fontSize="1.5rem" />
-            <Text textTransform="uppercase">Adicionar categoria</Text>
+            <Icon as={category ? RiEditLine : RiAddLine} fontSize="1.5rem" />
+            <Text textTransform="uppercase">{category ? "Editar categoria" : "Adicionar categoria"}</Text>
           </HStack>
         </ModalHeader>
         <ModalCloseButton
@@ -169,12 +159,12 @@ export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransa
                 color="gray.400"
               >Selecione uma cor:</FormLabel>
               <Flex wrap="wrap" css={{ gap: '0.5rem' }}>
-                {colors.map(item => (
+                {colors.map(color => (
                   <SelectColorButton
-                    key={item.id}
-                    color={item.name}
-                    onClick={() => setColor(item)}
-                    active={color.name === item.name}
+                    key={color}
+                    color={color}
+                    onClick={() => setActiveColor(color)}
+                    active={activeColor === color}
                   />
                 ))}
               </Flex>
@@ -183,10 +173,21 @@ export function AddCategoryModal({ isOpen, onClose, type = 'income' }: AddTransa
           </Stack>
         </ModalBody>
 
-        <ModalFooter p="0" mt="2.5rem">
+        <ModalFooter p="0" mt="2.5rem" display="flex" flexDir="column">
           <Button type="submit" isLoading={formState.isSubmitting} colorScheme="green" w="100%">
             Salvar
           </Button>
+
+          {category !== null && category.active &&
+            <Button type="button" onClick={() => deactivateCategory(category.id)} colorScheme="red" w="100%" mt="2rem">
+              Desativar categoria
+            </Button>
+          }
+          {category !== null && category.active === false &&
+            <Button type="button" onClick={reactivate} colorScheme="orange" w="100%" mt="2rem">
+              Reativar categoria
+            </Button>
+          }
         </ModalFooter>
       </ModalContent>
     </Modal>
