@@ -5,6 +5,7 @@ import { yupResolver } from '@hookform/resolvers/yup'
 import Head from 'next/head'
 import { Input } from '../../components/Form/Input';
 import { useRouter } from 'next/dist/client/router'
+import { api } from '../../services/api'
 
 type SignInFormData = {
   name: string;
@@ -33,10 +34,10 @@ export default function RegisterUser() {
   const router = useRouter()
 
   const handleSignIn: SubmitHandler<SignInFormData> = async (values) => {
-    await new Promise(resolve => setTimeout(resolve, 2000))
+    const result = await api.post('register', values)
 
-    console.log(values)
-    router.push('/dashboard')
+    console.log(result)
+    //router.push('/dashboard')
   }
 
   const { errors } = formState
