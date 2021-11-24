@@ -64,10 +64,7 @@ export function Header() {
         <Stack spacing="2rem" align="center" direction="row" h="2.5rem">
           {!isMobile && <NavBar />}
 
-          <Profile user={{
-            name: "Christian Dueck",
-            profileImage: "https://github.com/christiandueck.png"
-          }} />
+          <Profile />
         </Stack>
       </Stack>
     </Flex>

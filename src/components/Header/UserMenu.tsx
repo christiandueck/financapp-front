@@ -1,82 +1,76 @@
 import { Stack, Flex, Text, IconButton, Link as ChakraLink, HStack, Icon, useDisclosure } from "@chakra-ui/react"
-import Link from "next/link"
-import { useEffect } from "react"
 import { RiCloseLine, RiLogoutCircleRLine, RiUserSettingsLine } from "react-icons/ri"
+import { useUser } from "../../hooks/useUser"
 import { ChangeUserDataModal } from "../User/ChangeUserDataModal"
 
 interface UserMenuProps {
-  name: string;
-  closeFunction: () => void;
+	name: string;
+	closeFunction: () => void;
 }
 
-export function UserMenu({ name, closeFunction }: UserMenuProps) {
-  const { isOpen, onOpen, onClose } = useDisclosure()
+export function UserMenu({ closeFunction }: UserMenuProps) {
+	const { user, signOut } = useUser();
 
-  return (
-    <Stack
-      spacing="0.25rem"
+	const { isOpen, onOpen, onClose } = useDisclosure()
 
-      zIndex={10}
+	return (
+		<Stack
+			spacing="0.25rem"
 
-      position="relative"
-      bottom="-0.75rem"
-      left="-15rem"
-      w="18rem"
+			zIndex={10}
 
-      borderRadius="0.5rem"
+			position="relative"
+			bottom="-0.75rem"
+			left="-15rem"
+			w="18rem"
 
-      bg="gray.700"
-      color="gray.100"
-      textTransform="uppercase"
+			borderRadius="0.5rem"
 
-      overflow="hidden"
-      shadow="dark-lg"
-    >
-      <Flex
-        justify="space-between"
-        h="3rem"
-        align="center"
-        borderBottom="1px solid #20B74A"
-      >
-        <Text ml="1rem">
-          Olá, <strong>{name.split(' ', 1)}</strong>
-        </Text>
-        <IconButton
-          aria-label="Close"
-          icon={<RiCloseLine />}
-          variant="none"
-          mr="0.25rem"
-          fontSize="2rem"
-          onClick={closeFunction}
-        />
-      </Flex>
+			bg="gray.700"
+			color="gray.100"
+			textTransform="uppercase"
 
-      <ChakraLink px="1rem" _hover={{ bg: "gray.600" }} borderBottom="1px solid #565E5E" onClick={onOpen}>
-        <HStack spacing="0.75rem">
-          <Icon as={RiUserSettingsLine} />
-          <Text lineHeight="3rem">
-            Alterar dados pessoais
-          </Text>
-        </HStack>
-      </ChakraLink>
+			overflow="hidden"
+			shadow="dark-lg"
+		>
+			<Flex
+				justify="space-between"
+				h="3rem"
+				align="center"
+				borderBottom="1px solid #20B74A"
+			>
+				<Text ml="1rem">
+					Olá, <strong>{user?.name?.split(' ', 1)}</strong>
+				</Text>
+				<IconButton
+					aria-label="Close"
+					icon={<RiCloseLine />}
+					variant="none"
+					mr="0.25rem"
+					fontSize="2rem"
+					onClick={closeFunction}
+				/>
+			</Flex>
 
-      <Link href="/" passHref>
-        <ChakraLink px="1rem" _hover={{ bg: "gray.600" }}>
-          <HStack spacing="0.75rem">
-            <Icon as={RiLogoutCircleRLine} />
-            <Text lineHeight="3rem">
-              Sair
-            </Text>
-          </HStack>
-        </ChakraLink>
-      </Link>
+			<ChakraLink px="1rem" _hover={{ bg: "gray.600" }} borderBottom="1px solid #565E5E" onClick={onOpen}>
+				<HStack spacing="0.75rem">
+					<Icon as={RiUserSettingsLine} />
+					<Text lineHeight="3rem">
+						Alterar dados pessoais
+					</Text>
+				</HStack>
+			</ChakraLink>
 
-      <ChangeUserDataModal isOpen={isOpen} onClose={onClose} user={
-        {
-          name: 'Christian Dueck',
-          email: 'christian@dueck.com.br'
-        }
-      } />
-    </Stack>
-  )
+			<ChakraLink px="1rem" _hover={{ bg: "gray.600" }} onClick={signOut}>
+				<HStack spacing="0.75rem">
+					<Icon as={RiLogoutCircleRLine} />
+					<Text lineHeight="3rem">
+						Sair
+					</Text>
+				</HStack>
+			</ChakraLink>
+
+			<ChangeUserDataModal isOpen={isOpen} onClose={onClose} />
+		</Stack>
+	)
 }

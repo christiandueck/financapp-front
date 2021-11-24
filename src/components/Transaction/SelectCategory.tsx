@@ -3,6 +3,7 @@ import { Badge } from '../Badge'
 import { useState } from 'react'
 import { RiArrowDownSLine, RiArrowUpSLine, RiBankCard2Line, RiBankLine, RiFunctionLine, RiWalletLine } from 'react-icons/ri'
 import { useEffect } from 'react'
+import { useCategory } from '../../hooks/useCategory'
 
 interface SelectCategoryProps {
   name: string;
@@ -19,76 +20,9 @@ type Category = {
 
 export function SelectCategory({ name, label, transaction }: SelectCategoryProps) {
 
-  const categories = [
-    {
-      type: 'outcome',
-      id: '1',
-      name: 'Água',
-      color: '#1DB4F5'
-    },
-    {
-      type: 'outcome',
-      id: '2',
-      name: 'Aluguel',
-      color: '#F51D1D'
-    },
-    {
-      type: 'outcome',
-      id: '3',
-      name: 'Transporte',
-      color: '#20B74A'
-    },
-    {
-      type: 'outcome',
-      id: '4',
-      name: 'Comunicação',
-      color: '#961DF5'
-    },
-    {
-      type: 'outcome',
-      id: '5',
-      name: 'Luz',
-      color: '#F5781D'
-    },
-    {
-      type: 'outcome',
-      id: '6',
-      name: 'Mercado',
-      color: '#1DB4F5'
-    },
-    {
-      type: 'outcome',
-      id: '7',
-      name: 'Lazer',
-      color: '#C289EF'
-    },
-    {
-      type: 'outcome',
-      id: '8',
-      name: 'Educação',
-      color: '#FF4A96'
-    },
-    {
-      type: 'income',
-      id: '9',
-      name: 'Salário',
-      color: '#FA4F4F'
-    },
-    {
-      type: 'income',
-      id: '10',
-      name: 'Rendimentos',
-      color: '#F5781D'
-    },
-    {
-      type: 'income',
-      id: '11',
-      name: 'Outros',
-      color: '#9DB410'
-    }
-  ]
+  const { categories } = useCategory();
 
-  const [category, setCategory] = useState(categories[0])
+  const [category, setCategory] = useState(categories ? categories[0] : null)
   const [showList, setShowList] = useState(false)
 
   function toggleShowList() {
@@ -138,7 +72,9 @@ export function SelectCategory({ name, label, transaction }: SelectCategoryProps
                 <Icon as={RiFunctionLine} fontSize="1.25rem" />
               </Center>
 
-              <Badge name={category.name} color={category.color} id={category.id} />
+              {category &&
+                <Badge name={category?.name} color={category?.color.hex_code} />
+              }
             </HStack>
 
             <Icon
@@ -156,7 +92,7 @@ export function SelectCategory({ name, label, transaction }: SelectCategoryProps
                   <Badge
                     key={category.id}
                     name={category.name}
-                    color={category.color}
+                    color={category.color.hex_code}
                     onClick={() => changeCategory(category)}
                   />
                 )
@@ -165,8 +101,6 @@ export function SelectCategory({ name, label, transaction }: SelectCategoryProps
           }
         </Flex>
       </Flex>
-
-      <ChakraInput type="hidden" name={name} value={category.id} />
     </FormControl>
   )
 }

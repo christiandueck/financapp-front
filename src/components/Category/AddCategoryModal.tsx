@@ -1,4 +1,5 @@
 import { Stack, Modal, ModalOverlay, ModalContent, ModalHeader, ModalCloseButton, ModalBody, ModalFooter, Button, Text, HStack, Icon, SimpleGrid, FormLabel, FormControl, Flex } from "@chakra-ui/react"
+import { useDisclosure } from "@chakra-ui/react";
 import { useEffect, useState } from "react"
 import { RiAddLine, RiArrowDownCircleFill, RiArrowUpCircleFill, RiEditLine } from "react-icons/ri"
 import { Input } from "../Form/Input"
@@ -7,191 +8,189 @@ import { SelectColorButton } from "../Form/SelectColorButton"
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
-import { Category, useCategory } from "../../hooks/useCategory"
+import { api } from "../../services/api"
+import { useCategory } from "../../hooks/useCategory"
+import { Color, useColor } from "../../hooks/useColor"
+import { toast, ToastContainer } from 'react-toastify';
 
 interface AddTransactionModalProps {
-  type?: 'income' | 'outcome'
-  category?: Category;
+	type?: 'income' | 'outcome'
 }
 
-const colors = [
-  '#4267B2',
-  '#1DB4F5',
-  '#20B74A',
-  '#9DB410',
-  '#F5781D',
-  '#F51D1D',
-  '#961DF5',
-  '#C289EF'
-]
-
 type AddCategoryFormData = {
-  user?: string;
-  type: 'income' | 'outcome';
-  name: string;
-  color: string;
+	type: 'income' | 'outcome';
+	name: string;
+	color_id: number;
 }
 
 const addCategoryFormSchema = yup.object().shape({
-  name: yup.string().required('Nome é obrigatório')
+	name: yup.string().required('Nome é obrigatório')
 })
 
-export function AddCategoryModal({ type = 'income', category = null }: AddTransactionModalProps) {
-  const { isOpen, onClose, addCategory, updateCategory, deactivateCategory, reactivateCategory } = useCategory()
-  const [categoryType, setCategoryType] = useState(type)
-  const [activeColor, setActiveColor] = useState(colors[0]);
+export function AddCategoryModal({ type = 'income' }: AddTransactionModalProps) {
+	const { colors } = useColor();
+	const { editCategory, deactivateCategory, closeCategoryModal, isOpenCategoryModal } = useCategory()
+	const [categoryType, setCategoryType] = useState(type)
+	const [activeColor, setActiveColor] = useState<Color | null>(colors ? colors[0] : null);
 
-  const { register, handleSubmit, formState, setValue } = useForm({
-    resolver: yupResolver(addCategoryFormSchema)
-  })
+	const { register, handleSubmit, formState, setValue } = useForm({
+		resolver: yupResolver(addCategoryFormSchema)
+	})
 
-  const handleSaveCategory: SubmitHandler<AddCategoryFormData> = async (values) => {
-    if (category !== null) {
-      const updatedCategory = {
-        ...values,
-        id: category.id,
-        type: categoryType,
-        color: activeColor,
-        active: category.active
-      }
+	const handleSaveCategory: SubmitHandler<AddCategoryFormData> = async (values) => {
+		if (editCategory !== null) {
+			await api.post(`category/update/${editCategory.id}`, {
+				id: editCategory.id,
+				name: values.name,
+				type: categoryType,
+				color_id: activeColor.id,
+				active: editCategory.active
+			}).catch((error) => {
+				toast.error("Não foi possível cadastrar a categoria, tente novamente!")
+			})
+		} else {
+			await api.post('category/insert', {
+				name: values.name,
+				type: categoryType,
+				color_id: activeColor.id
+			}).catch((error) => {
+				toast.error("Categoria já cadastrada!")
+			})
+		}
 
-      updateCategory(updatedCategory);
+		closeCategoryModal()
+	}
 
-    } else {
+	async function reactivate() {
+		await api.post(`category/update/${editCategory.id}`, {
+			id: editCategory.id,
+			name: editCategory.name,
+			type: categoryType,
+			color_id: activeColor.id,
+			active: true
+		})
 
-      const newCategory = {
-        ...values,
-        type: categoryType,
-        color: activeColor,
-        user: 'Christian'
-      }
+		closeCategoryModal()
+	}
 
-      addCategory(newCategory);
-    }
+	const { errors } = formState
 
-    onClose()
-  }
+	useEffect(() => {
+		if (editCategory !== null) {
+			setCategoryType(editCategory.type)
+			setActiveColor(editCategory.color)
+			setValue('name', editCategory.name)
+		} else {
+			setCategoryType(type)
+			setValue('name', '')
+			setActiveColor(colors ? colors[0] : null)
+		}
+	}, [isOpenCategoryModal])
 
-  function reactivate() {
-    reactivateCategory()
-  }
+	return (
+		<Modal isOpen={isOpenCategoryModal} onClose={closeCategoryModal} isCentered size="xl">
+			<ToastContainer />
 
-  const { errors } = formState
+			<ModalOverlay />
+			<ModalContent
+				bg="gray.800"
+				p="1.5rem"
+				overflow="hidden"
+				borderRadius="1rem"
+				as="form"
+				onSubmit={handleSubmit(handleSaveCategory)}
+			>
 
-  useEffect(() => {
-    if (category !== null) {
-      setCategoryType(category.type)
-      setActiveColor(category.color)
-      setValue('name', category.name)
-    } else {
-      setCategoryType(type)
-      setValue('name', '')
-      setActiveColor(colors[0])
-    }
-  }, [isOpen])
+				<ModalHeader p="0" mb="2rem">
+					<HStack>
+						<Icon as={editCategory ? RiEditLine : RiAddLine} fontSize="1.5rem" />
+						<Text textTransform="uppercase">{editCategory ? "Editar categoria" : "Adicionar categoria"}</Text>
+					</HStack>
+				</ModalHeader>
+				<ModalCloseButton
+					top="1.5rem"
+					right="1.5rem"
+					fontSize="1rem"
+					color="gray.100"
+				/>
 
-  return (
-    <Modal isOpen={isOpen} onClose={onClose} isCentered size="xl">
-      <ModalOverlay />
-      <ModalContent
-        bg="gray.800"
-        p="1.5rem"
-        overflow="hidden"
-        borderRadius="1rem"
-        as="form"
-        onSubmit={handleSubmit(handleSaveCategory)}
-      >
+				<ModalBody p="0">
+					<Stack spacing="1.5rem">
 
-        <ModalHeader p="0" mb="2rem">
-          <HStack>
-            <Icon as={category ? RiEditLine : RiAddLine} fontSize="1.5rem" />
-            <Text textTransform="uppercase">{category ? "Editar categoria" : "Adicionar categoria"}</Text>
-          </HStack>
-        </ModalHeader>
-        <ModalCloseButton
-          top="1.5rem"
-          right="1.5rem"
-          fontSize="1rem"
-          color="gray.100"
-        />
+						<FormControl>
+							<FormLabel
+								htmlFor="type"
+								textTransform="uppercase"
+								fontSize="sm"
+								ml="0.5rem"
+								mb="0"
+								color="gray.400"
+							>Tipo de categoria:</FormLabel>
+							<SimpleGrid columns={2} spacing="1rem" p={0}>
 
-        <ModalBody p="0">
-          <Stack spacing="1.5rem">
+								<SelectButton
+									icon={{
+										icon: RiArrowUpCircleFill,
+										color: "green.500"
+									}}
+									active={categoryType === 'income'}
+									onClick={() => setCategoryType('income')}
+								>Entrada</SelectButton>
 
-            <FormControl>
-              <FormLabel
-                htmlFor="type"
-                textTransform="uppercase"
-                fontSize="sm"
-                ml="0.5rem"
-                mb="0"
-                color="gray.400"
-              >Tipo de categoria:</FormLabel>
-              <SimpleGrid columns={2} spacing="1rem" p={0}>
+								<SelectButton
+									icon={{
+										icon: RiArrowDownCircleFill,
+										color: "red.500"
+									}}
+									active={categoryType === 'outcome'}
+									onClick={() => setCategoryType('outcome')}
+								>Saída</SelectButton>
+							</SimpleGrid>
+						</FormControl>
 
-                <SelectButton
-                  icon={{
-                    icon: RiArrowUpCircleFill,
-                    color: "green.500"
-                  }}
-                  active={categoryType === 'income'}
-                  onClick={() => setCategoryType('income')}
-                >Entrada</SelectButton>
+						<Input name="name" type="text" label="Nome" error={errors.name} {...register('name')} />
 
-                <SelectButton
-                  icon={{
-                    icon: RiArrowDownCircleFill,
-                    color: "red.500"
-                  }}
-                  active={categoryType === 'outcome'}
-                  onClick={() => setCategoryType('outcome')}
-                >Saída</SelectButton>
-              </SimpleGrid>
-            </FormControl>
+						<FormControl>
+							<FormLabel
+								htmlFor="color"
+								textTransform="uppercase"
+								fontSize="sm"
+								ml="0.5rem"
+								mb="0"
+								color="gray.400"
+							>Selecione uma cor:</FormLabel>
+							<Flex wrap="wrap" css={{ gap: '0.5rem' }}>
+								{colors?.map(color => (
+									<SelectColorButton
+										key={color.id}
+										color={color.hex_code}
+										onClick={() => setActiveColor(color)}
+										active={activeColor?.id === color.id}
+									/>
+								))}
+							</Flex>
+						</FormControl>
 
-            <Input name="name" type="text" label="Nome" error={errors.name} {...register('name')} />
+					</Stack>
+				</ModalBody>
 
-            <FormControl>
-              <FormLabel
-                htmlFor="color"
-                textTransform="uppercase"
-                fontSize="sm"
-                ml="0.5rem"
-                mb="0"
-                color="gray.400"
-              >Selecione uma cor:</FormLabel>
-              <Flex wrap="wrap" css={{ gap: '0.5rem' }}>
-                {colors.map(color => (
-                  <SelectColorButton
-                    key={color}
-                    color={color}
-                    onClick={() => setActiveColor(color)}
-                    active={activeColor === color}
-                  />
-                ))}
-              </Flex>
-            </FormControl>
+				<ModalFooter p="0" mt="2.5rem" display="flex" flexDir="column">
+					<Button type="submit" isLoading={formState.isSubmitting} colorScheme="green" w="100%">
+						Salvar
+					</Button>
 
-          </Stack>
-        </ModalBody>
-
-        <ModalFooter p="0" mt="2.5rem" display="flex" flexDir="column">
-          <Button type="submit" isLoading={formState.isSubmitting} colorScheme="green" w="100%">
-            Salvar
-          </Button>
-
-          {category !== null && category.active &&
-            <Button type="button" onClick={() => deactivateCategory(category.id)} colorScheme="red" w="100%" mt="2rem">
-              Desativar categoria
-            </Button>
-          }
-          {category !== null && category.active === false &&
-            <Button type="button" onClick={reactivate} colorScheme="orange" w="100%" mt="2rem">
-              Reativar categoria
-            </Button>
-          }
-        </ModalFooter>
-      </ModalContent>
-    </Modal>
-  )
+					{editCategory !== null && editCategory.active &&
+						<Button type="button" onClick={() => deactivateCategory()} colorScheme="red" w="100%" mt="2rem">
+							Desativar categoria
+						</Button>
+					}
+					{editCategory !== null && editCategory.active === false &&
+						<Button type="button" onClick={reactivate} colorScheme="orange" w="100%" mt="2rem">
+							Reativar categoria
+						</Button>
+					}
+				</ModalFooter>
+			</ModalContent>
+		</Modal>
+	)
 }
