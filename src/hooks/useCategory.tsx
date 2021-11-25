@@ -1,7 +1,7 @@
 import { createContext, ReactNode, useContext, useEffect, useState } from "react";
 import { api } from "../services/api";
 import { useUser } from "./useUser";
-import { useColor, Color } from "./useColor";
+import { Color } from "./useColor";
 
 export type Category = {
 	id: number;
@@ -29,7 +29,6 @@ type CategoryProvider = {
 
 export function CategoryProvider(props: CategoryProvider) {
 	const { user } = useUser();
-	const { colors } = useColor();
 
 	const [categories, setCategories] = useState<Category[] | null>(null)
 	const [editCategory, setEditCategory] = useState<Category | null>(null)
