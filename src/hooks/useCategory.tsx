@@ -37,7 +37,10 @@ export function CategoryProvider(props: CategoryProvider) {
 
 	async function getCategories() {
 		await api.get('category/get/all').then(response => {
-			setCategories(response.data.categories)
+			const sortedCategories = response.data.categories.sort((a, b) => (
+				a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
+			)
+			setCategories(sortedCategories)
 		})
 	}
 
