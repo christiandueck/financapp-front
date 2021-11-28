@@ -6,20 +6,23 @@ import { AddTransactionButton } from "../Transaction/AddTransactionButton"
 import { useBreakpointValue } from "@chakra-ui/react"
 
 export function NavBar() {
-  const isMobile = useBreakpointValue({
-    base: true,
-    sm: false,
-  })
+	const showIcon = useBreakpointValue({
+		base: true,
+		lg: false,
+		xl: true,
+	})
 
-  return (
-    <Stack spacing="2rem" align={{ base: "start", lg: "center" }} direction={{ base: "column", lg: "row" }}>
-      <NavLink href="/dashboard" icon={RiBarChart2Line}>Dashboard</NavLink>
-
-      <NavLink href="/accounts" icon={RiBankLine}>Contas</NavLink>
-      <NavLink href="/categories" icon={RiFunctionLine}>Categorias</NavLink>
-      <NavLink href="/transactions" icon={RiArrowLeftRightLine}>Transações</NavLink>
-
-      <AddTransactionButton />
-    </Stack>
-  )
+	return (
+		<Stack
+			spacing={{ base: "2rem", lg: "1rem", xl: "2rem" }}
+			align={{ base: "start", lg: "center" }}
+			direction={{ base: "column", lg: "row" }}
+		>
+			<NavLink href="/dashboard" icon={showIcon ? RiBarChart2Line : null}>Dashboard</NavLink>
+			<NavLink href="/accounts" icon={showIcon ? RiBankLine : null}>Contas</NavLink>
+			<NavLink href="/categories" icon={showIcon ? RiFunctionLine : null}>Categorias</NavLink>
+			<NavLink href="/transactions" icon={showIcon ? RiArrowLeftRightLine : null}>Transações</NavLink>
+			<AddTransactionButton />
+		</Stack>
+	)
 }

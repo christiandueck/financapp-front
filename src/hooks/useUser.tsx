@@ -44,7 +44,7 @@ export function UserProvider(props: UserProvider) {
 			api.get('/user/get').then(response => {
 				setUser(response.data.message)
 			}).catch((error) => {
-				console.log(error)
+				signOut()
 			})
 		}
 	}, [])

@@ -69,13 +69,13 @@ export function CategoryTable({ isMobile, categoryType, activeCategories }: Cate
 
 						<Td w="4rem" borderColor="whiteAlpha.200" h="3rem" py={0} px={{ base: "0.5rem", md: "1rem", lg: "2rem" }}>
 							<Flex justify="center">
-								<Button variant="unstyled">
-									<Icon as={RiEditLine} w="1.5rem" h="1.5rem" onClick={() => { openCategoryModal(category) }} />
+								<Button variant="unstyled" onClick={() => { openCategoryModal(category) }}>
+									<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
 								</Button>
 
 								{category.active &&
-									<Button variant="unstyled">
-										<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" onClick={() => { deactivateCategory(category.id) }} />
+									<Button variant="unstyled" onClick={() => { deactivateCategory(category.id) }}>
+										<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
 									</Button>
 								}
 							</Flex>

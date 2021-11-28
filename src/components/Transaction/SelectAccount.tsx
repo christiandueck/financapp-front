@@ -2,192 +2,210 @@ import { Center, FormControl, FormLabel, Icon, Button, Flex, HStack, Input as Ch
 import { Badge } from '../Badge'
 import { useEffect, useState } from 'react'
 import { RiArrowDownSLine, RiArrowLeftSLine, RiArrowRightSLine, RiArrowUpSLine, RiBankCard2Line, RiBankLine, RiWalletLine } from 'react-icons/ri'
+import { Account, useAccount } from '../../hooks/useAccount'
+import { number } from 'yup/lib/locale'
 
 interface SelectAccountProps {
-  name: string;
-  label?: string;
+	name: string;
+	label?: string;
+	transactionAmount: number;
+	setAccountId: (id: number) => void;
+	setInstallmentsCount: (count: number) => void;
+	setPaymentDate: (date: Date) => void;
 }
 
-type Account = {
-  type: 'bank' | 'credit' | 'cash'
-  id?: string;
-  name: string;
-  color: string;
-}
+export function SelectAccount({
+	name, label, transactionAmount, setAccountId, setInstallmentsCount, setPaymentDate
+}: SelectAccountProps) {
+	const { activeAccounts } = useAccount();
 
-export function SelectAccount({ name, label }: SelectAccountProps) {
+	const accountType = ['bank', 'card', 'cash']
+	const icons = [RiBankLine, RiBankCard2Line, RiWalletLine]
 
-  const accounts = [
-    {
-      type: 'bank',
-      id: '1',
-      name: 'Itaú',
-      color: '#4267B2'
-    },
-    {
-      type: 'credit',
-      id: '2',
-      name: 'Itaucad',
-      color: '#F5781D'
-    },
-    {
-      type: 'bank',
-      id: '3',
-      name: 'Caixa',
-      color: '#1DB4F5'
-    },
-    {
-      type: 'bank',
-      id: '4',
-      name: 'Banco do Brasil',
-      color: '#9DB410'
-    },
-    {
-      type: 'cash',
-      id: '5',
-      name: 'Carteira',
-      color: '#20B74A'
-    }
-  ]
+	const [account, setAccount] = useState(activeAccounts[0])
+	const [showList, setShowList] = useState(false)
+	const [installment, setInstallment] = useState<{ count: number, value: number }>({ count: 1, value: transactionAmount })
+	const [invoicePaymentDate, setInvoicePaymentDate] = useState(invoiceDate())
 
-  const accountType = ['bank', 'credit', 'cash']
-  const icons = [RiBankLine, RiBankCard2Line, RiWalletLine]
+	function invoiceDate() {
+		const now = new Date()
+		const dueDate = account.invoice_due_date
+		const closingDate = account.invoice_closing_date
 
-  const [account, setAccount] = useState(accounts[0])
-  const [showList, setShowList] = useState(false)
-  const [isCredit, setIsCredit] = useState(account.type === 'credit')
+		if (account.type === 'card') {
+			if (now.getDay() <= closingDate && now.getDay() > dueDate) {
+				return new Date(`${now.getMonth() + 1}/${dueDate}/${now.getFullYear()}`)
+			} else {
+				return new Date(`${now.getMonth() + 2}/${dueDate}/${now.getFullYear()}`)
+			}
+		}
+	}
 
-  function toggleShowList() {
-    setShowList(!showList)
-  }
+	function changeInvoice(aggregator: number) {
+		setInvoicePaymentDate(new Date(invoicePaymentDate.setMonth(invoicePaymentDate.getMonth() + aggregator)))
+	}
 
-  function changeAccount(account) {
-    setAccount(account)
-    setShowList(false)
-  }
+	function installments(installmentCount: number) {
+		if (installmentCount >= 1 && installmentCount <= 12) {
+			setInstallment({
+				count: installmentCount,
+				value: transactionAmount / installmentCount
+			})
+			setInstallmentsCount(installmentCount)
+		}
+	}
 
-  useEffect(() => {
-    setIsCredit(account.type === 'credit')
-  }, [account.type])
+	function toggleShowList() {
+		setShowList(!showList)
+	}
 
-  return (
-    <FormControl id={name}>
-      {!!label && <FormLabel
-        htmlFor={name}
-        textTransform="uppercase"
-        fontSize="sm"
-        ml="0.5rem"
-        mb="0"
-        color="gray.400"
-      >
-        {label}:
-      </FormLabel>}
-      <Flex
-        h="inherit"
-        w="100%"
-        variant="unstyled"
-        bg="gray.600"
-        borderRadius="0.5rem"
-        overflow="hidden"
-        boxShadow={showList ? "0 0 0 2px var(--chakra-colors-green-500)" : "none"}
-      >
-        <Flex flexDir="column" w="100%">
-          <Flex h="2.5rem" align="center" justifyContent="space-between" onClick={toggleShowList} cursor="pointer">
-            <HStack align="center" spacing="1.5rem">
-              <Center
-                h="2rem"
-                w="4rem"
-                borderRight="1px solid"
-                borderColor="whiteAlpha.200"
-                color="gray.100"
-              >
-                <Icon as={RiBankLine} fontSize="1.25rem" />
-              </Center>
+	function changeAccount(account: Account) {
+		setAccount(account)
+		setShowList(false)
+	}
 
-              <Badge name={account.name} color={account.color} id={account.id} icon={icons[accountType.indexOf(account.type)]} />
-            </HStack>
+	useEffect(() => {
+		setInstallment(prev => ({
+			count: prev.count,
+			value: transactionAmount / prev.count
+		}))
+	}, [transactionAmount])
 
-            <Icon
-              mr="0.5rem"
-              as={showList ? RiArrowUpSLine : RiArrowDownSLine}
-              fontSize="2rem"
-              color="gray.400"
-            />
-          </Flex>
+	useEffect(() => {
+		setAccountId(account?.id || 0)
+		setInvoicePaymentDate(invoiceDate())
+	}, [account])
 
-          {showList &&
-            <Flex p="1rem" wrap="wrap" css={{ gap: "1rem" }} borderTop="1px solid" borderColor="whiteAlpha.200">
-              {accounts.map((account) => {
-                return (
-                  <Badge
-                    key={account.id}
-                    name={account.name}
-                    color={account.color}
-                    icon={icons[accountType.indexOf(account.type)]}
-                    onClick={() => changeAccount(account)}
-                  />
-                )
-              })}
-            </Flex>
-          }
+	useEffect(() => {
+		setPaymentDate(invoicePaymentDate)
+	}, [invoicePaymentDate])
 
-          {isCredit &&
-            <Flex borderTop="1px solid" borderColor="whiteAlpha.200" align="center">
-              <Flex flex={1} h="2.5rem" borderRight="1px solid" borderColor="whiteAlpha.200" justify="space-between">
-                <Button
-                  variant="unstyled"
-                  color="gray.400"
-                  _hover={{ color: 'gray.100' }}
-                >
-                  <Icon as={RiArrowLeftSLine} fontSize="2rem" />
-                </Button>
+	return (
+		<FormControl id={name}>
+			{!!label && <FormLabel
+				htmlFor={name}
+				textTransform="uppercase"
+				fontSize="sm"
+				ml="0.5rem"
+				mb="0"
+				color="gray.400"
+			>
+				{label}:
+			</FormLabel>}
+			<Flex
+				h="inherit"
+				w="100%"
+				variant="unstyled"
+				bg="gray.600"
+				borderRadius="0.5rem"
+				overflow="hidden"
+				boxShadow={showList ? "0 0 0 2px var(--chakra-colors-green-500)" : "none"}
+			>
+				<Flex flexDir="column" w="100%">
+					<Flex h="2.5rem" align="center" justifyContent="space-between" onClick={toggleShowList} cursor="pointer">
+						<HStack align="center" spacing="1.5rem">
+							<Center
+								h="2rem"
+								w="4rem"
+								borderRight="1px solid"
+								borderColor="whiteAlpha.200"
+								color="gray.100"
+							>
+								<Icon as={RiBankLine} fontSize="1.25rem" />
+							</Center>
 
-                <Button color="gray.200" variant="unstyled" _hover={{ color: 'white' }}>
-                  <HStack>
-                    <Text fontSize="0.8rem" fontWeight="normal">Fatura: </Text>
-                    <Text>11/jul</Text>
-                  </HStack>
-                </Button>
+							<Badge name={account.name} color={account.color.hex_code} id={account.id.toString()} icon={icons[accountType.indexOf(account.type)]} />
+						</HStack>
 
-                <Button
-                  variant="unstyled"
-                  color="gray.400"
-                  _hover={{ color: 'gray.100' }}
-                >
-                  <Icon as={RiArrowRightSLine} fontSize="2rem" />
-                </Button>
-              </Flex>
+						<Icon
+							mr="0.5rem"
+							as={showList ? RiArrowUpSLine : RiArrowDownSLine}
+							fontSize="2rem"
+							color="gray.400"
+						/>
+					</Flex>
 
-              <Flex flex={1} h="2.5rem" justify="space-between">
-                <Button
-                  variant="unstyled"
-                  color="gray.400"
-                  _hover={{ color: 'gray.100' }}
-                >
-                  <Icon as={RiArrowLeftSLine} fontSize="2rem" />
-                </Button>
+					{showList &&
+						<Flex p="1rem" wrap="wrap" css={{ gap: "1rem" }} borderTop="1px solid" borderColor="whiteAlpha.200">
+							{activeAccounts.map((account) => {
+								console.log(account)
+								return (
+									<Badge
+										key={account.id}
+										name={account.name}
+										color={account.color.hex_code}
+										icon={icons[accountType.indexOf(account.type)]}
+										onClick={() => changeAccount(account)}
+									/>
+								)
+							})}
+						</Flex>
+					}
 
-                <Button color="gray.200" variant="unstyled" _hover={{ color: 'white' }}>
-                  <HStack>
-                    <Text>2x</Text>
-                    <Text fontSize="0.8rem" fontWeight="normal">100,00</Text>
-                  </HStack>
-                </Button>
+					{account.type === 'card' &&
+						<Flex borderTop="1px solid" borderColor="whiteAlpha.200" align="center">
+							<Flex flex={1} h="2.5rem" borderRight="1px solid" borderColor="whiteAlpha.200" justify="space-between">
+								<Button
+									variant="unstyled"
+									color="gray.400"
+									_hover={{ color: 'gray.100' }}
+									onClick={() => changeInvoice(-1)}
+								>
+									<Icon as={RiArrowLeftSLine} fontSize="2rem" />
+								</Button>
 
-                <Button
-                  variant="unstyled"
-                  color="gray.400"
-                  _hover={{ color: 'gray.100' }}
-                >
-                  <Icon as={RiArrowRightSLine} fontSize="2rem" />
-                </Button>
-              </Flex>
-            </Flex>
-          }
-        </Flex>
-      </Flex>
+								<Button color="gray.200" variant="unstyled" _hover={{ color: 'white' }}>
+									<HStack>
+										<Text fontSize="0.8rem" fontWeight="normal">Fatura: </Text>
+										<Text>{`${invoicePaymentDate?.getDate() || account.invoice_closing_date}/${invoicePaymentDate?.toLocaleDateString('pt-BR', { month: 'short' }).replace(" ", "").replace(".", "") || new Date().setMonth(new Date().getMonth() + 1)}`}</Text>
+									</HStack>
+								</Button>
 
-      <ChakraInput type="hidden" name={name} value={account.id} />
-    </FormControl>
-  )
+								<Button
+									variant="unstyled"
+									color="gray.400"
+									_hover={{ color: 'gray.100' }}
+									onClick={() => changeInvoice(+1)}
+								>
+									<Icon as={RiArrowRightSLine} fontSize="2rem" />
+								</Button>
+							</Flex>
+
+							<Flex flex={1} h="2.5rem" justify="space-between">
+								<Button
+									variant="unstyled"
+									color="gray.400"
+									_hover={{ color: 'gray.100' }}
+									onClick={() => installments(installment.count - 1)}
+								>
+									<Icon as={RiArrowLeftSLine} fontSize="2rem" />
+								</Button>
+
+								<Button color="gray.200" variant="unstyled" _hover={{ color: 'white' }}>
+									<HStack>
+										<Text>{installment.count}x</Text>
+										<Text fontSize="0.8rem" fontWeight="normal">{installment.value.toLocaleString('pt-BR', {
+											minimumFractionDigits: 2,
+											maximumFractionDigits: 2
+										})}</Text>
+									</HStack>
+								</Button>
+
+								<Button
+									variant="unstyled"
+									color="gray.400"
+									_hover={{ color: 'gray.100' }}
+									onClick={() => installments(installment.count + 1)}
+								>
+									<Icon as={RiArrowRightSLine} fontSize="2rem" />
+								</Button>
+							</Flex>
+						</Flex>
+					}
+				</Flex>
+			</Flex>
+
+			<ChakraInput type="hidden" name={name} value={account.id} />
+		</FormControl>
+	)
 }

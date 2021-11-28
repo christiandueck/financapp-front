@@ -1,40 +1,29 @@
-import { Center, FormControl, FormLabel, Icon, Button, Flex, HStack, Input as ChakraInput, IconButton } from '@chakra-ui/react'
+import { Center, FormControl, FormLabel, Icon, Flex, HStack } from '@chakra-ui/react'
 import { Badge } from '../Badge'
 import { useState } from 'react'
-import { RiArrowDownSLine, RiArrowUpSLine, RiBankCard2Line, RiBankLine, RiFunctionLine, RiWalletLine } from 'react-icons/ri'
-import { useEffect } from 'react'
-import { Category, useCategory } from '../../hooks/useCategory'
+import { RiArrowDownSLine, RiArrowUpSLine } from 'react-icons/ri'
+import { IconType } from 'react-icons'
+import { AccountType, accountTypes } from '../../hooks/useAccount'
 
-interface SelectCategoryProps {
+interface SelectAccountTypeProps {
 	name: string;
 	label?: string;
-	transaction: string;
-	setCategoryId: (id: number) => void;
+	types: AccountType[];
+	accountType: 'bank' | 'card' | 'cash' | string;
+	setAccountType: (type: string) => void;
 }
 
-export function SelectCategory({ name, label, transaction, setCategoryId }: SelectCategoryProps) {
-
-	const { categories } = useCategory();
-
-	const [category, setCategory] = useState(categories ? categories[0] : null)
+export function SelectAccountType({ name, label, types, accountType, setAccountType }: SelectAccountTypeProps) {
 	const [showList, setShowList] = useState(false)
 
 	function toggleShowList() {
 		setShowList(!showList)
 	}
 
-	function changeCategory(category: Category) {
-		setCategory(category)
+	function changeAccountType(type: 'bank' | 'card' | 'cash' | string) {
+		setAccountType(type)
 		setShowList(false)
 	}
-
-	useEffect(() => {
-		setCategory(categories?.filter((category) => (category.type === transaction))[0])
-	}, [transaction])
-
-	useEffect(() => {
-		setCategoryId(category?.id || 0)
-	}, [category])
 
 	return (
 		<FormControl id={name}>
@@ -67,11 +56,11 @@ export function SelectCategory({ name, label, transaction, setCategoryId }: Sele
 								borderColor="whiteAlpha.200"
 								color="gray.100"
 							>
-								<Icon as={RiFunctionLine} fontSize="1.25rem" />
+								<Icon as={accountTypes.find((item) => (item.type === accountType)).icon} fontSize="1.25rem" />
 							</Center>
 
-							{category &&
-								<Badge name={category?.name} color={category?.color.hex_code} />
+							{accountType &&
+								<Badge name={accountTypes.find((item) => (item.type === accountType)).label} color="gray.500" />
 							}
 						</HStack>
 
@@ -85,13 +74,14 @@ export function SelectCategory({ name, label, transaction, setCategoryId }: Sele
 
 					{showList &&
 						<Flex p="1rem" wrap="wrap" css={{ gap: "1rem" }} borderTop="1px solid" borderColor="whiteAlpha.200">
-							{categories.filter((category) => (category.type === transaction)).map((category) => {
+							{types.map((item) => {
 								return (
 									<Badge
-										key={category.id}
-										name={category.name}
-										color={category.color.hex_code}
-										onClick={() => changeCategory(category)}
+										key={item.type}
+										name={item.label}
+										icon={item.icon}
+										color={item.type === accountType ? "gray.800" : "gray.500"}
+										onClick={() => changeAccountType(item.type)}
 									/>
 								)
 							})}
