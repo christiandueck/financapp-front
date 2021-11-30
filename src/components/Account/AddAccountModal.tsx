@@ -71,6 +71,10 @@ export function AddAccountModal() {
 			name: editAccount.name,
 			type: accountType,
 			color_id: activeColor.id,
+			balance: editAccount.balance,
+			limit: editAccount.limit,
+			invoice_due_date: editAccount.invoice_due_date,
+			invoice_closing_date: editAccount.invoice_closing_date,
 			active: true
 		})
 
@@ -84,8 +88,8 @@ export function AddAccountModal() {
 			setAccountType(accountTypes.find(item => item.type === editAccount?.type)?.type)
 			setActiveColor(editAccount?.color)
 			setValue('name', editAccount?.name)
-			setValue('balance', editAccount?.balance)
-			setValue('limit', editAccount?.limit)
+			setValue('balance', editAccount?.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
+			setValue('limit', editAccount?.limit.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
 			setValue('invoice_closing_date', editAccount?.invoice_closing_date)
 			setValue('invoice_due_date', editAccount?.invoice_due_date)
 		} else {
