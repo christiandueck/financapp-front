@@ -147,6 +147,7 @@ export function AddTransactionModal({ isOpen, onClose }: AddTransactionModalProp
 								setAccountId={setDestinyAccountId}
 								setInstallmentsCount={setInstallments}
 								setPaymentDate={setPaymentDate}
+								filterAccountId={originAccountId}
 							/>
 						}
 

@@ -12,27 +12,33 @@ interface SelectAccountProps {
 	setAccountId: (id: number) => void;
 	setInstallmentsCount: (count: number) => void;
 	setPaymentDate: (date: Date) => void;
+	filterAccountId?: number;
 }
 
 export function SelectAccount({
-	name, label, transactionAmount, setAccountId, setInstallmentsCount, setPaymentDate
+	name, label, transactionAmount, setAccountId, setInstallmentsCount, setPaymentDate, filterAccountId
 }: SelectAccountProps) {
 	const { activeAccounts } = useAccount();
+
+	let filteredAccounts = activeAccounts;
+	if (filterAccountId) {
+		filteredAccounts = activeAccounts.filter(item => item.id !== filterAccountId)
+	}
 
 	const accountType = ['bank', 'card', 'cash']
 	const icons = [RiBankLine, RiBankCard2Line, RiWalletLine]
 
-	const [account, setAccount] = useState(activeAccounts[0])
+	const [account, setAccount] = useState(filteredAccounts[0])
 	const [showList, setShowList] = useState(false)
 	const [installment, setInstallment] = useState<{ count: number, value: number }>({ count: 1, value: transactionAmount })
 	const [invoicePaymentDate, setInvoicePaymentDate] = useState(invoiceDate())
 
 	function invoiceDate() {
 		const now = new Date()
-		const dueDate = account.invoice_due_date
-		const closingDate = account.invoice_closing_date
+		const dueDate = account?.invoice_due_date || 1
+		const closingDate = account?.invoice_closing_date || 1
 
-		if (account.type === 'card') {
+		if (account?.type === 'card') {
 			if (now.getDay() <= closingDate && now.getDay() > dueDate) {
 				return new Date(`${now.getMonth() + 1}/${dueDate}/${now.getFullYear()}`)
 			} else {
@@ -80,6 +86,10 @@ export function SelectAccount({
 		setPaymentDate(invoicePaymentDate)
 	}, [invoicePaymentDate])
 
+	useEffect(() => {
+		setAccount(filteredAccounts[0])
+	}, [filterAccountId])
+
 	return (
 		<FormControl id={name}>
 			{!!label && <FormLabel
@@ -114,7 +124,7 @@ export function SelectAccount({
 								<Icon as={RiBankLine} fontSize="1.25rem" />
 							</Center>
 
-							<Badge name={account.name} color={account.color.hex_code} id={account.id.toString()} icon={icons[accountType.indexOf(account.type)]} />
+							<Badge name={account?.name} color={account?.color.hex_code} id={account?.id.toString()} icon={icons[accountType.indexOf(account?.type)]} />
 						</HStack>
 
 						<Icon
@@ -127,14 +137,13 @@ export function SelectAccount({
 
 					{showList &&
 						<Flex p="1rem" wrap="wrap" css={{ gap: "1rem" }} borderTop="1px solid" borderColor="whiteAlpha.200">
-							{activeAccounts.map((account) => {
-								console.log(account)
+							{filteredAccounts.map((account) => {
 								return (
 									<Badge
-										key={account.id}
-										name={account.name}
-										color={account.color.hex_code}
-										icon={icons[accountType.indexOf(account.type)]}
+										key={account?.id}
+										name={account?.name}
+										color={account?.color.hex_code}
+										icon={icons[accountType.indexOf(account?.type)]}
 										onClick={() => changeAccount(account)}
 									/>
 								)
@@ -142,7 +151,7 @@ export function SelectAccount({
 						</Flex>
 					}
 
-					{account.type === 'card' &&
+					{account?.type === 'card' &&
 						<Flex borderTop="1px solid" borderColor="whiteAlpha.200" align="center">
 							<Flex flex={1} h="2.5rem" borderRight="1px solid" borderColor="whiteAlpha.200" justify="space-between">
 								<Button
@@ -157,7 +166,7 @@ export function SelectAccount({
 								<Button color="gray.200" variant="unstyled" _hover={{ color: 'white' }}>
 									<HStack>
 										<Text fontSize="0.8rem" fontWeight="normal">Fatura: </Text>
-										<Text>{`${invoicePaymentDate?.getDate() || account.invoice_closing_date}/${invoicePaymentDate?.toLocaleDateString('pt-BR', { month: 'short' }).replace(" ", "").replace(".", "") || new Date().setMonth(new Date().getMonth() + 1)}`}</Text>
+										<Text>{`${invoicePaymentDate?.getDate() || account?.invoice_closing_date}/${invoicePaymentDate?.toLocaleDateString('pt-BR', { month: 'short' }).replace(" ", "").replace(".", "") || new Date().setMonth(new Date().getMonth() + 1)}`}</Text>
 									</HStack>
 								</Button>
 
@@ -204,8 +213,6 @@ export function SelectAccount({
 					}
 				</Flex>
 			</Flex>
-
-			<ChakraInput type="hidden" name={name} value={account.id} />
 		</FormControl>
 	)
 }
