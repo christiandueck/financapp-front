@@ -61,9 +61,8 @@ export function AccountProvider(props: AccountProvider) {
 				a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
 			)
 			setAccounts(sortedAccounts)
-			setActiveAccounts(sortedAccounts.filter(item => item.active = true))
+			setActiveAccounts(sortedAccounts.filter(item => item.active === true))
 		})
-		console.log(accounts, activeAccounts)
 	}
 
 	function openAccountModal(account = null) {
