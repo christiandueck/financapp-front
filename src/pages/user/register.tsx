@@ -7,8 +7,9 @@ import { Input } from '../../components/Form/Input';
 import { useRouter } from 'next/dist/client/router'
 import { api } from '../../services/api'
 import { AxiosError, AxiosResponse } from 'axios'
-import { useState } from 'react'
 import { toast, ToastContainer } from 'react-toastify';
+import { useUser } from '../../hooks/useUser'
+import { useEffect } from 'react'
 
 type SignInFormData = {
 	name: string;
@@ -42,7 +43,7 @@ const registerUserFormSchema = yup.object().shape({
 })
 
 export default function RegisterUser() {
-	const [alreadyRegisteredEmails, setAlreadyRegisteredEmails] = useState<String[]>([])
+	const { user, signIn } = useUser()
 
 	const { register, handleSubmit, formState, watch } = useForm({
 		resolver: yupResolver(registerUserFormSchema)
@@ -54,17 +55,30 @@ export default function RegisterUser() {
 		await api.post('register', values)
 			.then((response: AxiosResponse<CreateUserSuccess>) => {
 				if (response.data.status) {
-					router.push('/')
+					api.post('login', {
+						email: values.email,
+						password: values.password
+					}).then((response) => {
+						if (response.data.status) {
+							signIn(response.data.token, response.data.user)
+						} else {
+							router.push('/')
+						}
+					})
 				}
-				console.log(response)
 			})
 			.catch((error: AxiosError<CreateUserError>) => {
 				toast.error(error.response?.data.user)
-				setAlreadyRegisteredEmails([...alreadyRegisteredEmails, values.email])
 			})
 	}
 
 	const { errors } = formState
+
+	useEffect(() => {
+		if (user) {
+			router.push('../dashboard')
+		}
+	}, [user])
 
 	return (
 		<Center
