@@ -27,11 +27,13 @@ export function ColorProvider(props: ColorProvider) {
 		const token = localStorage.getItem('@financapp:token')
 
 		if (token) {
-			api.defaults.headers.common.authorization = `Bearer ${token}`
+			if (user) {
+				api.defaults.headers.common.authorization = `Bearer ${token}`
 
-			api.get('colors').then(response => {
-				setColors(response.data.colors)
-			})
+				api.get('colors').then(response => {
+					setColors(response.data.colors)
+				})
+			}
 		}
 	}, [user])
 

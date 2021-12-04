@@ -90,9 +90,11 @@ export function AccountProvider(props: AccountProvider) {
 		const token = localStorage.getItem('@financapp:token')
 
 		if (token) {
-			api.defaults.headers.common.authorization = `Bearer ${token}`
+			if (user) {
+				api.defaults.headers.common.authorization = `Bearer ${token}`
 
-			getAccounts();
+				getAccounts();
+			}
 		}
 	}, [user])
 

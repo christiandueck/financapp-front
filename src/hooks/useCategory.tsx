@@ -64,9 +64,11 @@ export function CategoryProvider(props: CategoryProvider) {
 		const token = localStorage.getItem('@financapp:token')
 
 		if (token) {
-			api.defaults.headers.common.authorization = `Bearer ${token}`
+			if (user) {
+				api.defaults.headers.common.authorization = `Bearer ${token}`
 
-			getCategories();
+				getCategories();
+			}
 		}
 	}, [user])
 
