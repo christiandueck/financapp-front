@@ -79,11 +79,7 @@ export function AccountProvider(props: AccountProvider) {
 	async function deactivateAccount(AccountId?: number) {
 		const id = AccountId ? AccountId : editAccount.id
 		await api.delete(`account/delete/${id}`)
-		getAccounts()
-		setEditAccount(prev => ({
-			...prev,
-			active: accounts.find(item => item.id === prev.id).active
-		}))
+		closeAccountModal()
 	}
 
 	useEffect(() => {
