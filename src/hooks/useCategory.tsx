@@ -60,7 +60,7 @@ export function CategoryProvider(props: CategoryProvider) {
 	async function deactivateCategory(categoryId?: number) {
 		const id = categoryId ? categoryId : editCategory.id
 		await api.delete(`category/delete/${id}`)
-		getCategories()
+		closeCategoryModal()
 	}
 
 	useEffect(() => {
