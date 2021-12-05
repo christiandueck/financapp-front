@@ -17,7 +17,7 @@ type AddAccountFormData = {
 	type: 'bank' | 'card' | 'cash';
 	name: string;
 	balance: string;
-	limit: string;
+	/*limit: string;*/
 	invoice_closing_date: string;
 	invoice_due_date: string;
 	color_id: number;
@@ -42,7 +42,7 @@ export function AddAccountModal() {
 			type: accountType,
 			name: values.name,
 			balance: values.balance ? Number(values.balance.replace(".", "").replace(",", ".")) : 0,
-			limit: values.limit ? Number(values.limit.replace(".", "").replace(",", ".")) : 0,
+			/*limit: values.limit ? Number(values.limit.replace(".", "").replace(",", ".")) : 0,*/
 			invoice_due_date: values.invoice_due_date ? Number(values.invoice_due_date.replace(".", "").replace(",", ".")) : 0,
 			invoice_closing_date: values.invoice_closing_date ? Number(values.invoice_closing_date.replace(".", "").replace(",", ".")) : 0,
 			color_id: activeColor.id,
@@ -89,7 +89,7 @@ export function AddAccountModal() {
 			setActiveColor(editAccount?.color)
 			setValue('name', editAccount?.name)
 			setValue('balance', editAccount?.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
-			setValue('limit', editAccount?.limit.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
+			/*setValue('limit', editAccount?.limit.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))*/
 			setValue('invoice_closing_date', editAccount?.invoice_closing_date)
 			setValue('invoice_due_date', editAccount?.invoice_due_date)
 		} else {
@@ -97,7 +97,7 @@ export function AddAccountModal() {
 			setActiveColor(colors ? colors[0] : null)
 			setValue('name', '')
 			setValue('balance', '')
-			setValue('limit', '')
+			/*setValue('limit', '')*/
 			setValue('invoice_closing_date', '')
 			setValue('invoice_due_date', '')
 		}
@@ -147,7 +147,7 @@ export function AddAccountModal() {
 
 						{accountType === 'card'
 							? <>
-								<Input
+								{/*<Input
 									name="limit"
 									type="text"
 									label="Limite do cartão"
@@ -157,7 +157,7 @@ export function AddAccountModal() {
 									mask="currency"
 									error={errors.limit}
 									{...register('limit')}
-								/>
+								/>*/}
 								<Input
 									name="invoice_due_date"
 									type="number"
