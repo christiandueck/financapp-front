@@ -14,9 +14,9 @@ interface SelectCategoryProps {
 
 export function SelectCategory({ name, label, transaction, setCategoryId }: SelectCategoryProps) {
 
-	const { categories } = useCategory();
+	const { activeCategories } = useCategory();
 
-	const [category, setCategory] = useState(categories ? categories[0] : null)
+	const [category, setCategory] = useState(activeCategories ? activeCategories[0] : null)
 	const [showList, setShowList] = useState(false)
 
 	function toggleShowList() {
@@ -29,7 +29,7 @@ export function SelectCategory({ name, label, transaction, setCategoryId }: Sele
 	}
 
 	useEffect(() => {
-		setCategory(categories?.filter((category) => (category.type === transaction))[0])
+		setCategory(activeCategories?.filter((category) => (category.type === transaction))[0])
 	}, [transaction])
 
 	useEffect(() => {
@@ -85,7 +85,7 @@ export function SelectCategory({ name, label, transaction, setCategoryId }: Sele
 
 					{showList &&
 						<Flex p="1rem" wrap="wrap" css={{ gap: "1rem" }} borderTop="1px solid" borderColor="whiteAlpha.200">
-							{categories.filter((category) => (category.type === transaction)).map((category) => {
+							{activeCategories.filter((category) => (category.type === transaction)).map((category) => {
 								return (
 									<Badge
 										key={category.id}

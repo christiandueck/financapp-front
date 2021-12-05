@@ -13,6 +13,7 @@ export type Category = {
 
 type CategoryContextData = {
 	categories: Category[],
+	activeCategories: Category[],
 	getCategories: () => void;
 	openCategoryModal: (category?: Category | null) => void;
 	closeCategoryModal: () => void;
@@ -31,6 +32,7 @@ export function CategoryProvider(props: CategoryProvider) {
 	const { user } = useUser();
 
 	const [categories, setCategories] = useState<Category[] | null>(null)
+	const [activeCategories, setActiveCategories] = useState<Category[] | null>(null)
 	const [editCategory, setEditCategory] = useState<Category | null>(null)
 	const [isOpenCategoryModal, setIsOpenCategoryModal] = useState(false)
 
@@ -40,6 +42,7 @@ export function CategoryProvider(props: CategoryProvider) {
 				a.name > b.name) ? 1 : ((b.name > a.name) ? -1 : 0)
 			)
 			setCategories(sortedCategories)
+			setActiveCategories(sortedCategories.filter((item) => item.active === true))
 		})
 	}
 
@@ -75,6 +78,7 @@ export function CategoryProvider(props: CategoryProvider) {
 	return (
 		<CategoryContext.Provider value={{
 			categories,
+			activeCategories,
 			getCategories,
 			openCategoryModal,
 			closeCategoryModal,
