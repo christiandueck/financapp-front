@@ -53,24 +53,26 @@ export function AccountGrid({ activeAccounts }: AccountGridProps) {
 							fontSize={{ base: "1.25rem", md: "1.5rem", lg: "1.75rem" }}
 						>{account.name}</Text>
 
-						<Flex
-							justifyContent="space-between"
-							flexDir={{ base: "column", md: "row", lg: "column", xl: "row" }}
-							alignItems={{ base: "start", md: "center", lg: "start", xl: "center" }}
-						>
-							<Text
-								fontSize={{ base: "1rem", md: "1.25rem", xl: "1.5rem" }}
-								textTransform="uppercase"
-							>Saldo atual:</Text>
-							<Text
-								fontSize={{ base: "1.25rem", md: "1.5rem" }}
-								fontWeight="700"
-								color={account.balance >= 0 ? "green.500" : "red.500"}
-							>{(account.balance).toLocaleString('pt-BR', {
-								style: 'currency',
-								currency: 'BRL'
-							})}</Text>
-						</Flex>
+						{account.type !== 'card' &&
+							<Flex
+								justifyContent="space-between"
+								flexDir={{ base: "column", md: "row", lg: "column", xl: "row" }}
+								alignItems={{ base: "start", md: "center", lg: "start", xl: "center" }}
+							>
+								<Text
+									fontSize={{ base: "1rem", md: "1.25rem", xl: "1.5rem" }}
+									textTransform="uppercase"
+								>Saldo atual:</Text>
+								<Text
+									fontSize={{ base: "1.25rem", md: "1.5rem" }}
+									fontWeight="700"
+									color={account.balance >= 0 ? "green.500" : "red.500"}
+								>{(account.balance).toLocaleString('pt-BR', {
+									style: 'currency',
+									currency: 'BRL'
+								})}</Text>
+							</Flex>
+						}
 					</Stack>
 					<Flex py="0.5rem" h="100%">
 						<Button
