@@ -11,7 +11,6 @@ export type Account = {
 	type: 'bank' | 'card' | 'cash';
 	color: Color;
 	balance: number;
-	limit: number;
 	invoice_closing_date: number;
 	invoice_due_date: number;
 	active: boolean;
@@ -83,14 +82,8 @@ export function AccountProvider(props: AccountProvider) {
 	}
 
 	useEffect(() => {
-		const token = localStorage.getItem('@financapp:token')
-
-		if (token) {
-			if (user) {
-				api.defaults.headers.common.authorization = `Bearer ${token}`
-
-				getAccounts();
-			}
+		if (user) {
+			getAccounts();
 		}
 	}, [user])
 

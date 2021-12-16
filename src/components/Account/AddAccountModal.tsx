@@ -17,7 +17,6 @@ type AddAccountFormData = {
 	type: 'bank' | 'card' | 'cash';
 	name: string;
 	balance: string;
-	/*limit: string;*/
 	invoice_closing_date: string;
 	invoice_due_date: string;
 	color_id: number;
@@ -72,7 +71,6 @@ export function AddAccountModal() {
 			type: accountType,
 			color_id: activeColor.id,
 			balance: editAccount.balance,
-			limit: editAccount.limit,
 			invoice_due_date: editAccount.invoice_due_date,
 			invoice_closing_date: editAccount.invoice_closing_date,
 			active: true
@@ -89,7 +87,6 @@ export function AddAccountModal() {
 			setActiveColor(editAccount?.color)
 			setValue('name', editAccount?.name)
 			setValue('balance', editAccount?.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
-			/*setValue('limit', editAccount?.limit.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))*/
 			setValue('invoice_closing_date', editAccount?.invoice_closing_date)
 			setValue('invoice_due_date', editAccount?.invoice_due_date)
 		} else {
@@ -97,7 +94,6 @@ export function AddAccountModal() {
 			setActiveColor(colors ? colors[0] : null)
 			setValue('name', '')
 			setValue('balance', '')
-			/*setValue('limit', '')*/
 			setValue('invoice_closing_date', '')
 			setValue('invoice_due_date', '')
 		}
@@ -147,17 +143,6 @@ export function AddAccountModal() {
 
 						{accountType === 'card'
 							? <>
-								{/*<Input
-									name="limit"
-									type="text"
-									label="Limite do cartão"
-									suffix="R$"
-									placeholder="0,00"
-									inputMode="numeric"
-									mask="currency"
-									error={errors.limit}
-									{...register('limit')}
-								/>*/}
 								<Input
 									name="invoice_due_date"
 									type="number"
