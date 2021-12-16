@@ -11,7 +11,7 @@ interface SelectAccountProps {
 	transactionAmount: number;
 	setAccountId: (id: number) => void;
 	setInstallmentsCount: (count: number) => void;
-	setPaymentDate: (date: Date) => void;
+	setPaymentDate: (date: string) => void;
 	filterAccountId?: number;
 }
 
@@ -31,24 +31,30 @@ export function SelectAccount({
 	const [account, setAccount] = useState(filteredAccounts[0])
 	const [showList, setShowList] = useState(false)
 	const [installment, setInstallment] = useState<{ count: number, value: number }>({ count: 1, value: transactionAmount })
-	const [invoicePaymentDate, setInvoicePaymentDate] = useState(invoiceDate())
+	const [invoicePaymentDate, setInvoicePaymentDate] = useState<Date>(invoiceDate())
 
 	function invoiceDate() {
 		const now = new Date()
 		const dueDate = account?.invoice_due_date || 1
 		const closingDate = account?.invoice_closing_date || 1
+		let date
 
 		if (account?.type === 'card') {
-			if (now.getDay() <= closingDate && now.getDay() > dueDate) {
-				return new Date(`${now.getMonth() + 1}/${dueDate}/${now.getFullYear()}`)
+			if (now.getDate() <= closingDate && now.getDate() > dueDate) {
+				date = new Date(now.getFullYear(), now.getMonth() + 1, dueDate)
 			} else {
-				return new Date(`${now.getMonth() + 2}/${dueDate}/${now.getFullYear()}`)
+				date = new Date(now.getFullYear(), now.getMonth() + 2, dueDate)
 			}
+		} else {
+			date = now;
 		}
+
+		return date;
 	}
 
-	function changeInvoice(aggregator: number) {
-		setInvoicePaymentDate(new Date(invoicePaymentDate.setMonth(invoicePaymentDate.getMonth() + aggregator)))
+	function changeInvoiceDate(aggregator: number) {
+		const changedInvoiceDate = new Date(invoicePaymentDate.setMonth(invoicePaymentDate.getMonth() + aggregator))
+		setInvoicePaymentDate(changedInvoiceDate)
 	}
 
 	function installments(installmentCount: number) {
@@ -78,17 +84,24 @@ export function SelectAccount({
 	}, [transactionAmount])
 
 	useEffect(() => {
-		setAccountId(account?.id || 0)
+		setInstallmentsCount(installment.count)
+	}, [installment])
+
+	useEffect(() => {
+		setAccountId(account?.id || activeAccounts[0]?.id)
 		setInvoicePaymentDate(invoiceDate())
 	}, [account])
 
 	useEffect(() => {
-		setPaymentDate(invoicePaymentDate)
-	}, [invoicePaymentDate])
-
-	useEffect(() => {
 		setAccount(filteredAccounts[0])
 	}, [filterAccountId])
+
+	useEffect(() => {
+		const year = invoicePaymentDate.getFullYear()
+		const month = invoicePaymentDate.toLocaleDateString('default', { month: '2-digit' })
+		const day = invoicePaymentDate.toLocaleDateString('default', { day: '2-digit' })
+		setPaymentDate(`${year}-${month}-${day}`)
+	}, [invoicePaymentDate])
 
 	return (
 		<FormControl id={name}>
@@ -158,7 +171,7 @@ export function SelectAccount({
 									variant="unstyled"
 									color="gray.400"
 									_hover={{ color: 'gray.100' }}
-									onClick={() => changeInvoice(-1)}
+									onClick={() => changeInvoiceDate(-1)}
 								>
 									<Icon as={RiArrowLeftSLine} fontSize="2rem" />
 								</Button>
@@ -166,7 +179,10 @@ export function SelectAccount({
 								<Button color="gray.200" variant="unstyled" _hover={{ color: 'white' }}>
 									<HStack>
 										<Text fontSize="0.8rem" fontWeight="normal">Fatura: </Text>
-										<Text>{`${invoicePaymentDate?.getDate() || account?.invoice_closing_date}/${invoicePaymentDate?.toLocaleDateString('pt-BR', { month: 'short' }).replace(" ", "").replace(".", "") || new Date().setMonth(new Date().getMonth() + 1)}`}</Text>
+										<Text>{Intl.DateTimeFormat('pt-BR', {
+											day: '2-digit',
+											month: 'short'
+										}).format(invoicePaymentDate).replace(' ', '').replace('.', '').replace('de ', '/')}</Text>
 									</HStack>
 								</Button>
 
@@ -174,7 +190,7 @@ export function SelectAccount({
 									variant="unstyled"
 									color="gray.400"
 									_hover={{ color: 'gray.100' }}
-									onClick={() => changeInvoice(+1)}
+									onClick={() => changeInvoiceDate(+1)}
 								>
 									<Icon as={RiArrowRightSLine} fontSize="2rem" />
 								</Button>

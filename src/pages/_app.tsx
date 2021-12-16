@@ -9,6 +9,7 @@ import { UserProvider } from '../hooks/useUser';
 import { CategoryProvider } from '../hooks/useCategory';
 import { ColorProvider } from '../hooks/useColor';
 import { AccountProvider } from '../hooks/useAccount';
+import { TransactionProvider } from '../hooks/useTransaction';
 
 const queryClient = new QueryClient()
 
@@ -18,13 +19,15 @@ function MyApp({ Component, pageProps }: AppProps) {
 			<ColorProvider>
 				<AccountProvider>
 					<CategoryProvider>
-						<QueryClientProvider client={queryClient}>
-							<ChakraProvider theme={theme}>
-								<MonthContextProvider>
-									<Component {...pageProps} />
-								</MonthContextProvider>
-							</ChakraProvider>
-						</QueryClientProvider>
+						<TransactionProvider>
+							<QueryClientProvider client={queryClient}>
+								<ChakraProvider theme={theme}>
+									<MonthContextProvider>
+										<Component {...pageProps} />
+									</MonthContextProvider>
+								</ChakraProvider>
+							</QueryClientProvider>
+						</TransactionProvider>
 					</CategoryProvider>
 				</AccountProvider>
 			</ColorProvider>
