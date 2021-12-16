@@ -64,14 +64,8 @@ export function CategoryProvider(props: CategoryProvider) {
 	}
 
 	useEffect(() => {
-		const token = localStorage.getItem('@financapp:token')
-
-		if (token) {
-			if (user) {
-				api.defaults.headers.common.authorization = `Bearer ${token}`
-
-				getCategories();
-			}
+		if (user) {
+			getCategories();
 		}
 	}, [user])
 
