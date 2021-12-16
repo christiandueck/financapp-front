@@ -68,7 +68,9 @@ export function AddCategoryModal({ type = 'income' }: AddTransactionModalProps) 
 			type: categoryType,
 			color_id: activeColor.id,
 			active: true
-		})
+		}).catch(error => (
+			null
+		))
 
 		closeCategoryModal()
 	}
