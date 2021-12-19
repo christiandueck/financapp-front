@@ -2,7 +2,6 @@ import { AppProps } from 'next/app'
 import { ChakraProvider } from '@chakra-ui/react'
 import { theme } from '../styles/theme'
 import '../styles/scroolbar.css';
-import { MonthContextProvider } from '../contexts/MonthContext';
 import { QueryClient, QueryClientProvider } from 'react-query';
 import 'react-toastify/dist/ReactToastify.min.css';
 import { UserProvider } from '../hooks/useUser';
