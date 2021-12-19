@@ -154,7 +154,7 @@ export function AddTransactionModal() {
 								setAccountId={setDestinyAccountId}
 								setInstallmentsCount={setInstallments}
 								setPaymentDate={setPaymentDate}
-								filterAccountId={originAccountId}
+								filterAccountId={transactionType === 'transfer' ? originAccountId : null}
 							/>
 						}
 
