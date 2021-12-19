@@ -14,7 +14,7 @@ import { SelectAccountType } from "../Account/SelectAccountType";
 
 
 type AddAccountFormData = {
-	type: 'bank' | 'card' | 'cash';
+	type: 'bank' | 'credit_card' | 'cash';
 	name: string;
 	balance: string;
 	invoice_closing_date: string;
@@ -41,7 +41,6 @@ export function AddAccountModal() {
 			type: accountType,
 			name: values.name,
 			balance: values.balance ? Number(values.balance.replace(".", "").replace(",", ".")) : 0,
-			/*limit: values.limit ? Number(values.limit.replace(".", "").replace(",", ".")) : 0,*/
 			invoice_due_date: values.invoice_due_date ? Number(values.invoice_due_date.replace(".", "").replace(",", ".")) : 0,
 			invoice_closing_date: values.invoice_closing_date ? Number(values.invoice_closing_date.replace(".", "").replace(",", ".")) : 0,
 			color_id: activeColor.id,
@@ -141,7 +140,7 @@ export function AddAccountModal() {
 
 						<Input name="name" type="text" label="Nome" error={errors.name} {...register('name')} />
 
-						{accountType === 'card'
+						{accountType === 'credit_card'
 							? <>
 								<Input
 									name="invoice_due_date"

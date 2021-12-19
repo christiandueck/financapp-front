@@ -53,7 +53,7 @@ export function AccountGrid({ activeAccounts }: AccountGridProps) {
 							fontSize={{ base: "1.25rem", md: "1.5rem", lg: "1.75rem" }}
 						>{account.name}</Text>
 
-						{account.type !== 'card' &&
+						{account.type !== 'credit_card' &&
 							<Flex
 								justifyContent="space-between"
 								flexDir={{ base: "column", md: "row", lg: "column", xl: "row" }}

@@ -9,7 +9,7 @@ interface SelectAccountTypeProps {
 	name: string;
 	label?: string;
 	types: AccountType[];
-	accountType: 'bank' | 'card' | 'cash' | string;
+	accountType: 'bank' | 'credit_card' | 'cash' | string;
 	setAccountType: (type: string) => void;
 }
 
@@ -20,7 +20,7 @@ export function SelectAccountType({ name, label, types, accountType, setAccountT
 		setShowList(!showList)
 	}
 
-	function changeAccountType(type: 'bank' | 'card' | 'cash' | string) {
+	function changeAccountType(type: 'bank' | 'credit_card' | 'cash' | string) {
 		setAccountType(type)
 		setShowList(false)
 	}

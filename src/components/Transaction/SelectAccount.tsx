@@ -25,7 +25,7 @@ export function SelectAccount({
 		filteredAccounts = activeAccounts.filter(item => item.id !== filterAccountId)
 	}
 
-	const accountType = ['bank', 'card', 'cash']
+	const accountType = ['bank', 'credit_card', 'cash']
 	const icons = [RiBankLine, RiBankCard2Line, RiWalletLine]
 
 	const [account, setAccount] = useState(filteredAccounts[0])
@@ -39,7 +39,7 @@ export function SelectAccount({
 		const closingDate = account?.invoice_closing_date || 1
 		let date
 
-		if (account?.type === 'card') {
+		if (account?.type === 'credit_card') {
 			if (now.getDate() <= closingDate && now.getDate() > dueDate) {
 				date = new Date(now.getFullYear(), now.getMonth() + 1, dueDate)
 			} else {
@@ -164,7 +164,7 @@ export function SelectAccount({
 						</Flex>
 					}
 
-					{account?.type === 'card' &&
+					{account?.type === 'credit_card' &&
 						<Flex borderTop="1px solid" borderColor="whiteAlpha.200" align="center">
 							<Flex flex={1} h="2.5rem" borderRight="1px solid" borderColor="whiteAlpha.200" justify="space-between">
 								<Button

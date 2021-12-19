@@ -8,7 +8,7 @@ import { IconType } from "react-icons";
 export type Account = {
 	id: number;
 	name: string;
-	type: 'bank' | 'card' | 'cash';
+	type: 'bank' | 'credit_card' | 'cash';
 	color: Color;
 	balance: number;
 	invoice_closing_date: number;
@@ -17,14 +17,14 @@ export type Account = {
 }
 
 export type AccountType = {
-	type: 'bank' | 'card' | 'cash' | string;
+	type: 'bank' | 'credit_card' | 'cash' | string;
 	label: string;
 	icon: IconType;
 }
 
 export const accountTypes = [
 	{ type: 'bank', label: 'Banco', icon: RiBankLine },
-	{ type: 'card', label: 'Cartão de Crédito', icon: RiBankCardLine },
+	{ type: 'credit_card', label: 'Cartão de Crédito', icon: RiBankCardLine },
 	{ type: 'cash', label: 'Espécie', icon: RiWalletLine },
 ]
 
