@@ -6,61 +6,26 @@ import { BarChart } from '../components/Charts/BarChart'
 import { MonthSelector } from '../components/Filter/MonthSelector'
 import { Summary } from '../components/Summary'
 import { useState } from 'react'
-import { useMonth } from '../contexts/MonthContext'
 import { useEffect } from 'react'
 import { AddTransactionButton } from '../components/Transaction/AddTransactionButton'
 import { useRouter } from 'next/dist/client/router'
 import { useUser } from '../hooks/useUser'
-
-type DashboardData = {
-	month: number;
-	year: number;
-	balance: {
-		income: number;
-		outcome: number;
-	}
-	monthlyExpenses: {
-		name: string;
-		amount: number;
-		color: string;
-	}[],
-	montlyBalance: {
-		xaxis: string[];
-		series: {
-			name: string;
-			data: number[];
-			color: string;
-		}[]
-	}
-}
+import { useTransaction } from '../hooks/useTransaction'
 
 export default function Dashboard() {
 	const { user } = useUser();
+	const { dashboard, summary, getTransactions, getDashboard } = useTransaction();
 
 	const isMobile = useBreakpointValue({
 		base: true,
 		lg: false,
 	})
 
-	const { month, year } = useMonth()
-
-	const [data, setData] = useState<DashboardData>()
-
 	const router = useRouter()
 
 	useEffect(() => {
-		let jsonData: DashboardData = null
-		try {
-			jsonData = require(`../json/${year}-${month}.json`)
-		} catch {
-
-		}
-
-		setData(jsonData)
-	}, [month, year])
-
-	useEffect(() => {
-		setData(require('../json/2021-7.json'))
+		getTransactions()
+		getDashboard()
 	}, [])
 
 	useEffect(() => {
@@ -89,8 +54,8 @@ export default function Dashboard() {
 
 				<MonthSelector />
 
-				{data ? <>
-					<Summary income={data.balance.income} outcome={data.balance.outcome} />
+				{dashboard ? <>
+					<Summary income={summary.income} outcome={summary.outcome} />
 
 					<SimpleGrid flex="1" gap={{ base: "1rem", lg: "2rem" }} minChildWidth="20rem" align="flex-start" w="100%">
 						<Box p={{ base: "1rem", lg: "2rem" }} bg="gray.700" borderRadius="0.5rem">
@@ -98,7 +63,7 @@ export default function Dashboard() {
 								<Text fontSize="lg" textTransform="uppercase" color="gray.100" fontWeight="bold">Despesas por categoria</Text>
 							</Center>
 
-							<DonutChart data={data.monthlyExpenses} />
+							<DonutChart data={dashboard.month_expenses} />
 						</Box>
 
 						<Box p={{ base: "1rem", lg: "2rem" }} bg="gray.700" borderRadius="0.5rem">
@@ -106,7 +71,7 @@ export default function Dashboard() {
 								<Text fontSize="lg" textTransform="uppercase" color="gray.100" fontWeight="bold">Entradas e Saídas</Text>
 							</Center>
 
-							<BarChart data={data.montlyBalance} />
+							<BarChart data={dashboard.monthly_balance} />
 						</Box>
 					</SimpleGrid>
 				</> :
