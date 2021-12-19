@@ -93,9 +93,12 @@ export default function Accounts() {
 							Não foi possível carregar as contas.
 						</Text>
 					</Flex>
-				) : (
-					<AccountGrid data={accounts} activeAccounts={activeAccounts} />
-				)}
+				) : accounts.length < 1 ?
+					<Text>Nenhuma conta cadastrada.</Text>
+					:
+					(
+						<AccountGrid data={accounts} activeAccounts={activeAccounts} />
+					)}
 			</Stack>
 
 			{isMobile &&
