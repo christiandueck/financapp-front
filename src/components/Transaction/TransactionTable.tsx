@@ -1,5 +1,5 @@
 import { Stack, Flex, Text, Icon, Table, Thead, Tbody, Tr, Th, Td, Circle, Button } from '@chakra-ui/react'
-import { RiEditLine, RiDeleteBin2Line } from 'react-icons/ri'
+import { RiEditLine, RiDeleteBin2Line, RiArrowDownCircleFill, RiArrowUpCircleFill, RiArrowLeftRightLine } from 'react-icons/ri'
 import { useColor } from '../../hooks/useColor';
 import { Transaction, useTransaction } from '../../hooks/useTransaction';
 import { Badge } from '../Badge';
@@ -60,11 +60,11 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 						fontWeight="bold"
 						fontSize="1rem"
 						color="white"
-						w="4rem"
+						w="7rem"
+						minW="7rem"
 						borderBottom="2px"
 						borderColor="#20B74A"
-						px={{ base: "1rem", md: "1.5rem", lg: "2.5rem" }}
-						py="0.5rem"
+						p="0.5rem"
 						textAlign="right"
 					>Valor (R$)</Th>
 					{!isMobile &&
@@ -75,6 +75,8 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 							borderBottom="2px"
 							borderColor="#20B74A"
 							py="0.5rem"
+							textAlign="right"
+							minW="6rem"
 						>Ações</Th>}
 				</Tr>
 			</Thead>
@@ -106,15 +108,33 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 							<Text>{format(new Date(transaction.date), 'dd/MM/yyyy')}</Text>
 						</Td>
 
-						<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="right">
-							<Text>{transaction.amount.toLocaleString('pt-BR', {
-								style: 'currency',
-								currency: 'BRL',
-							})}</Text>
+						<Td
+							px="0.5rem"
+							borderColor="whiteAlpha.200"
+						>
+							<Flex flexDir="row-reverse" alignItems="center">
+								<Icon marginLeft="0.5rem" as={transaction.type === 'income' ? RiArrowUpCircleFill
+									: transaction.type === 'outcome' ? RiArrowDownCircleFill
+										: RiArrowLeftRightLine
+								} fontSize="1rem" color={transaction.type === 'income' ? 'green.500'
+									: transaction.type === 'outcome' ? 'red.500' : 'purple.300'} />
+								<Text
+									color={transaction.type === 'income' ? "green.500" : transaction.type === 'outcome' ? "red.500" : "white"}
+								>{transaction.amount.toLocaleString('pt-BR', {
+									style: 'currency',
+									currency: 'BRL',
+								})}</Text>
+							</Flex>
 						</Td>
 
-						<Td w="4rem" borderColor="whiteAlpha.200" h="3rem" py={0} px={{ base: "0.5rem", md: "1rem", lg: "2rem" }}>
-							<Flex justify="center">
+						<Td
+							w="4rem"
+							borderColor="whiteAlpha.200"
+							h="3rem"
+							py={0}
+							px={{ base: "0.5rem", md: "1rem" }}
+						>
+							<Flex justify="flex-end">
 								<Button variant="unstyled" onClick={() => { openTransactionModal(transaction) }}>
 									<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
 								</Button>

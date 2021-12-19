@@ -1,14 +1,23 @@
 import Head from 'next/head'
-import { Stack, useBreakpointValue } from '@chakra-ui/react'
+import { Stack, Text, useBreakpointValue } from '@chakra-ui/react'
 import { Header } from '../components/Header'
 import { TransactionTable } from '../components/Transaction/TransactionTable'
+import { useTransaction } from '../hooks/useTransaction'
+import { useEffect } from 'react'
+import { Summary } from '../components/Summary'
+import { MonthSelector } from '../components/Filter/MonthSelector'
 
 export default function Transactions() {
+	const { transactions, summary, getTransactions } = useTransaction()
 
 	const isMobile = useBreakpointValue({
 		base: true,
 		md: false,
 	})
+
+	useEffect(() => {
+		getTransactions()
+	}, [])
 
 	return (
 		<Stack
@@ -26,7 +35,15 @@ export default function Transactions() {
 				<title>Transações | FinançApp</title>
 			</Head>
 
-			<TransactionTable isMobile={isMobile} />
+			<MonthSelector />
+
+			{transactions === null
+				? <Text>Nenhuma transação registrada.</Text>
+				: <>
+					<Summary income={summary.income} outcome={summary.outcome} />
+					<TransactionTable isMobile={isMobile} />
+				</>
+			}
 		</Stack>
 	)
 }
