@@ -22,9 +22,7 @@ function MyApp({ Component, pageProps }: AppProps) {
 						<TransactionProvider>
 							<QueryClientProvider client={queryClient}>
 								<ChakraProvider theme={theme}>
-									<MonthContextProvider>
-										<Component {...pageProps} />
-									</MonthContextProvider>
+									<Component {...pageProps} />
 								</ChakraProvider>
 							</QueryClientProvider>
 						</TransactionProvider>

@@ -3,7 +3,29 @@ import { api } from "../services/api";
 import { useUser } from "./useUser";
 import { Category, useCategory } from "./useCategory";
 import { Account, useAccount } from "./useAccount";
-import { useColor } from "./useColor";
+
+type Period = {
+	year: number;
+	month: number;
+}
+
+type DashboardData = {
+	month: number;
+	year: number;
+	month_expenses: {
+		name: string;
+		amount: number;
+		color: string;
+	}[],
+	monthly_balance: {
+		xaxis: string[];
+		series: {
+			name: string;
+			data: number[];
+			color: string;
+		}[]
+	}
+}
 
 export type Transaction = {
 	id: number;
@@ -30,6 +52,11 @@ type TransactionContextData = {
 	isOpenTransactionModal: boolean;
 	editTransaction: Transaction;
 	deleteTransaction: (TransactionId?: number) => void;
+	summary: { income: number, outcome: number }
+	period: Period;
+	setPeriod: (period: Period) => void;
+	dashboard: DashboardData;
+	getDashboard: () => void;
 }
 
 export const TransactionContext = createContext({} as TransactionContextData)
@@ -40,16 +67,22 @@ type TransactionProvider = {
 
 export function TransactionProvider(props: TransactionProvider) {
 	const { user } = useUser();
-	const { colors } = useColor();
 	const { accounts } = useAccount();
 	const { categories } = useCategory();
 
-	const [transactions, setTransactions] = useState<Transaction[] | null>(null)
+	const [transactions, setTransactions] = useState<Transaction[]>([])
 	const [editTransaction, setEditTransaction] = useState<Transaction | null>(null)
 	const [isOpenTransactionModal, setIsOpenTransactionModal] = useState(false)
+	const [summary, setSummary] = useState({ income: 0, outcome: 0 })
+	const [period, setPeriod] = useState<Period>({ year: new Date().getFullYear(), month: (new Date().getMonth() + 1) })
+	const [dashboard, setDashboard] = useState<DashboardData>(null)
+
+	function convertedPeriod(period: Period) {
+		return `${period.year}-${String(period.month).padStart(2, '0')}`
+	}
 
 	async function getTransactions() {
-		await api.get(`transaction/get/2021-12`).then(response => {
+		await api.get(`transaction/get/${convertedPeriod(period)}`).then(response => {
 			/*const sortedTransactions = response.data.Transactions.sort((a, b) => (
 				a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)
 			)*/
@@ -61,7 +94,44 @@ export function TransactionProvider(props: TransactionProvider) {
 				}
 			})
 			setTransactions(mappedTransactions)
+			const income = mappedTransactions.filter(item => item.type === 'income').reduce((acc, item) => (
+				acc + item.amount
+			), 0)
+			const outcome = mappedTransactions.filter(item => item.type === 'outcome').reduce((acc, item) => (
+				acc + item.amount
+			), 0)
+
+			setSummary({ income, outcome })
+		}).catch(error => {
+			setTransactions(null)
+			setSummary({ income: 0, outcome: 0 })
 		})
+	}
+
+	async function getDashboard() {
+		await api.get(`dashboard/${convertedPeriod(period)}`).then(response => {
+			const monthlyBalance = {
+				xaxis: response.data.dashboard.monthly_balance.map(item => (item.month.substring(0, 3))),
+				series: [
+					{
+						name: "Entradas",
+						color: "#20B74A",
+						data: response.data.dashboard.monthly_balance.map(item => (item.income === null ? 0 : item.income))
+					},
+					{
+						name: "Saídas",
+						color: "#FA4F4F",
+						data: response.data.dashboard.monthly_balance.map(item => (item.outcome === null ? 0 : item.outcome))
+					}
+				]
+			}
+			setDashboard({
+				...response.data.dashboard,
+				monthly_balance: monthlyBalance
+			})
+		}).catch(error => (
+			setDashboard(null)
+		))
 	}
 
 	function openTransactionModal(Transaction = null) {
@@ -72,14 +142,20 @@ export function TransactionProvider(props: TransactionProvider) {
 	function closeTransactionModal() {
 		setEditTransaction(null)
 		getTransactions()
+		getDashboard();
 		setIsOpenTransactionModal(false)
 	}
 
 	async function deleteTransaction(transactionId?: number) {
 		const id = transactionId ? transactionId : editTransaction.id
-		await api.delete(`Transaction/delete/${id}`)
+		await api.delete(`transaction/delete/${id}`)
 		getTransactions()
 	}
+
+	useEffect(() => {
+		getTransactions()
+		getDashboard()
+	}, [period])
 
 	useEffect(() => {
 		const token = localStorage.getItem('@financapp:token')
@@ -88,6 +164,7 @@ export function TransactionProvider(props: TransactionProvider) {
 			api.defaults.headers.common.authorization = `Bearer ${token}`
 
 			getTransactions();
+			getDashboard();
 		}
 	}, [user])
 
@@ -99,7 +176,12 @@ export function TransactionProvider(props: TransactionProvider) {
 			closeTransactionModal,
 			isOpenTransactionModal,
 			editTransaction,
-			deleteTransaction
+			deleteTransaction,
+			summary,
+			period,
+			setPeriod,
+			dashboard,
+			getDashboard
 		}}>
 			{props.children}
 		</TransactionContext.Provider>
