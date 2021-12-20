@@ -137,6 +137,7 @@ export function AddCategoryModal({ type = 'income' }: AddTransactionModalProps) 
 									}}
 									active={categoryType === 'income'}
 									onClick={() => setCategoryType('income')}
+									disabled={editCategory === null ? false : true}
 								>Entrada</SelectButton>
 
 								<SelectButton
@@ -146,6 +147,7 @@ export function AddCategoryModal({ type = 'income' }: AddTransactionModalProps) 
 									}}
 									active={categoryType === 'outcome'}
 									onClick={() => setCategoryType('outcome')}
+									disabled={editCategory === null ? false : true}
 								>Saída</SelectButton>
 							</SimpleGrid>
 						</FormControl>
