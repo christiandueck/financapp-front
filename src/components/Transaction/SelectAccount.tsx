@@ -9,6 +9,7 @@ interface SelectAccountProps {
 	name: string;
 	label?: string;
 	transactionAmount: number;
+	accountId?: number;
 	setAccountId: (id: number) => void;
 	setInstallmentsCount: (count: number) => void;
 	setPaymentDate: (date: string) => void;
@@ -16,7 +17,7 @@ interface SelectAccountProps {
 }
 
 export function SelectAccount({
-	name, label, transactionAmount, setAccountId, setInstallmentsCount, setPaymentDate, filterAccountId
+	name, label, transactionAmount, accountId, setAccountId, setInstallmentsCount, setPaymentDate, filterAccountId
 }: SelectAccountProps) {
 	const { activeAccounts } = useAccount();
 
@@ -28,7 +29,7 @@ export function SelectAccount({
 	const accountType = ['bank', 'credit_card', 'cash']
 	const icons = [RiBankLine, RiBankCard2Line, RiWalletLine]
 
-	const [account, setAccount] = useState(filteredAccounts[0])
+	const [account, setAccount] = useState(filteredAccounts ? filteredAccounts[filteredAccounts.map(e => e.id).indexOf(accountId)] : null)
 	const [showList, setShowList] = useState(false)
 	const [installment, setInstallment] = useState<{ count: number, value: number }>({ count: 1, value: transactionAmount })
 	const [invoicePaymentDate, setInvoicePaymentDate] = useState<Date>(invoiceDate())
@@ -88,7 +89,7 @@ export function SelectAccount({
 	}, [installment])
 
 	useEffect(() => {
-		setAccountId(account?.id || activeAccounts[0]?.id)
+		setAccountId(account?.id || activeAccounts[0]?.id || null)
 		setInvoicePaymentDate(invoiceDate())
 	}, [account])
 
@@ -102,6 +103,11 @@ export function SelectAccount({
 		const day = invoicePaymentDate.toLocaleDateString('default', { day: '2-digit' })
 		setPaymentDate(`${year}-${month}-${day}`)
 	}, [invoicePaymentDate])
+
+	useEffect(() => {
+		setAccount(activeAccounts[activeAccounts.map(e => e.id).indexOf(accountId)])
+	}, [accountId])
+
 
 	return (
 		<FormControl id={name}>

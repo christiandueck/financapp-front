@@ -15,6 +15,7 @@ import { useAccount } from "../../hooks/useAccount"
 import { Calendar, CalendarDate } from '@uselessdev/datepicker'
 import { ptBR } from 'date-fns/locale'
 import { DatePicker } from "../Form/DatePicker"
+import { useCategory } from "../../hooks/useCategory"
 
 type AddTransactionFormData = {
 	amount: string;
@@ -29,6 +30,7 @@ const addTransactionFormSchema = yup.object().shape({
 export function AddTransactionModal() {
 	const { isOpenTransactionModal, editTransaction, closeTransactionModal } = useTransaction()
 	const { activeAccounts } = useAccount()
+	const { activeCategories } = useCategory()
 
 	const { register, handleSubmit, formState, setValue, watch } = useForm({
 		resolver: yupResolver(addTransactionFormSchema)
@@ -75,6 +77,7 @@ export function AddTransactionModal() {
 			await api.post(`transaction/update/${editTransaction.id}`, {
 				...transaction,
 				id: editTransaction.id,
+				payment_id: editTransaction.payment_id,
 			}).catch((error) => {
 				//toast.error("Não foi possível cadastrar a conta, tente novamente!")
 			})
@@ -97,11 +100,18 @@ export function AddTransactionModal() {
 		if (editTransaction !== null) {
 			setTransactionType(editTransaction.type)
 			setDate(new Date(editTransaction.date))
+			setValue('amount', editTransaction.amount.toFixed(2).toString().replace('.', ','))
+			setValue('description', editTransaction.description)
+			setCategoryId(editTransaction.category.id)
+			setOriginAccountId(editTransaction.account.id)
+			setDestinyAccountId(editTransaction.destiny_account?.id || null)
 		} else {
 			setTransactionType('income')
 			setDate(new Date())
 			setValue('amount', '')
 			setValue('description', '')
+			setOriginAccountId(activeAccounts ? activeAccounts[0].id : null)
+			setCategoryId(activeCategories ? activeCategories.filter(category => category.type === transactionType)[0]?.id : null)
 		}
 	}, [isOpenTransactionModal])
 
@@ -159,6 +169,7 @@ export function AddTransactionModal() {
 								name="outcome_account"
 								label="Conta de origem"
 								transactionAmount={amount}
+								accountId={originAccountId}
 								setAccountId={setOriginAccountId}
 								setInstallmentsCount={setInstallments}
 								setPaymentDate={setPaymentDate}
@@ -170,6 +181,7 @@ export function AddTransactionModal() {
 								name="income_account"
 								label="Conta de destino"
 								transactionAmount={amount}
+								accountId={transactionType === 'transfer' ? destinyAccountId : originAccountId}
 								setAccountId={setDestinyAccountId}
 								setInstallmentsCount={setInstallments}
 								setPaymentDate={setPaymentDate}
@@ -178,7 +190,7 @@ export function AddTransactionModal() {
 						}
 
 						{transactionType !== 'transfer' &&
-							<SelectCategory name="category" label="Categoria" setCategoryId={setCategoryId} transaction={transactionType} />
+							<SelectCategory name="category" label="Categoria" categoryId={categoryId} setCategoryId={setCategoryId} transaction={transactionType} />
 						}
 
 						<Input

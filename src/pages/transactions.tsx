@@ -7,8 +7,11 @@ import { useEffect } from 'react'
 import { Summary } from '../components/Summary'
 import { MonthSelector } from '../components/Filter/MonthSelector'
 import { AddTransactionButton } from '../components/Transaction/AddTransactionButton'
+import { useRouter } from 'next/dist/client/router'
+import { useUser } from '../hooks/useUser'
 
 export default function Transactions() {
+	const { user } = useUser()
 	const { transactions, summary, getTransactions } = useTransaction()
 
 	const isMobile = useBreakpointValue({
@@ -16,9 +19,17 @@ export default function Transactions() {
 		md: false,
 	})
 
+	const router = useRouter()
+
 	useEffect(() => {
 		getTransactions()
 	}, [])
+
+	useEffect(() => {
+		if (!user) {
+			router.push('/')
+		}
+	}, [user])
 
 	return (
 		<>

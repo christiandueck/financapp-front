@@ -9,14 +9,15 @@ interface SelectCategoryProps {
 	name: string;
 	label?: string;
 	transaction: string;
+	categoryId?: number;
 	setCategoryId: (id: number) => void;
 }
 
-export function SelectCategory({ name, label, transaction, setCategoryId }: SelectCategoryProps) {
+export function SelectCategory({ name, label, transaction, categoryId, setCategoryId }: SelectCategoryProps) {
 
 	const { activeCategories } = useCategory();
 
-	const [category, setCategory] = useState(activeCategories ? activeCategories[0] : null)
+	const [category, setCategory] = useState(activeCategories ? activeCategories[activeCategories.map(e => e.id).indexOf(categoryId)] : null)
 	const [showList, setShowList] = useState(false)
 
 	function toggleShowList() {
@@ -35,6 +36,10 @@ export function SelectCategory({ name, label, transaction, setCategoryId }: Sele
 	useEffect(() => {
 		setCategoryId(category?.id || 0)
 	}, [category])
+
+	useEffect(() => {
+		setCategory(activeCategories[activeCategories.map(e => e.id).indexOf(categoryId)])
+	}, [categoryId])
 
 	return (
 		<FormControl id={name}>

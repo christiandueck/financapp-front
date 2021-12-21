@@ -166,6 +166,7 @@ export function AddAccountModal() {
 									type="number"
 									label="Dia de vencimento da fatura"
 									icon={RiCalendarLine}
+									placeholder="DD"
 									error={errors.invoice_due_date}
 									{...register('invoice_due_date')}
 								/>
@@ -174,6 +175,7 @@ export function AddAccountModal() {
 									type="number"
 									label="Dia de fechamento da fatura"
 									icon={RiCalendarLine}
+									placeholder="DD"
 									error={errors.invoice_closing_date}
 									{...register('invoice_closing_date')}
 								/>

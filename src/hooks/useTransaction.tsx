@@ -70,7 +70,7 @@ type TransactionProvider = {
 
 export function TransactionProvider(props: TransactionProvider) {
 	const { user } = useUser();
-	const { accounts } = useAccount();
+	const { accounts, getAccounts } = useAccount();
 	const { categories } = useCategory();
 
 	const [transactions, setTransactions] = useState<Transaction[]>([])
@@ -147,6 +147,7 @@ export function TransactionProvider(props: TransactionProvider) {
 		setEditTransaction(null)
 		getTransactions()
 		getDashboard();
+		getAccounts();
 		setIsOpenTransactionModal(false)
 	}
 
@@ -154,6 +155,7 @@ export function TransactionProvider(props: TransactionProvider) {
 		const id = transactionId ? transactionId : editTransaction.id
 		await api.delete(`transaction/delete/${id}`)
 		getTransactions()
+		getAccounts()
 	}
 
 	useEffect(() => {
