@@ -88,6 +88,7 @@ export function TransactionProvider(props: TransactionProvider) {
 			/*const sortedTransactions = response.data.Transactions.sort((a, b) => (
 				a.date > b.date) ? 1 : ((b.date > a.date) ? -1 : 0)
 			)*/
+			console.log(response.data)
 			const mappedTransactions = response.data.transactions.map(transaction => {
 				return {
 					...transaction,

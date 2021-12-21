@@ -53,6 +53,7 @@ export function AddTransactionModal() {
 				date: format(date, 'yyyy-MM-dd'),
 				invoice_first_charge: paymentDate || format(date, 'yyyy-MM-dd'),
 				installments: 1,
+				category_id: categoryId,
 				origin_account_id: originAccountId || activeAccounts[0].id,
 				destiny_account_id: destinyAccountId,
 				description: values.description,

@@ -86,83 +86,156 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 				(
 					<Tr key={transaction.id}>
 						{console.log(transaction)}
-						<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200">
-							<Stack spacing="0.5rem" direction="row" align="center">
-								<Text>
-									{transaction.description !== '' ? transaction.description : transaction.category.name}
-									{transaction.installment !== '1\/1' ? ` (${transaction.installment})` : ''}
-								</Text>
-							</Stack>
-						</Td>
+						{isMobile
+							? <>
+								<Td p="0.5rem" borderColor="whiteAlpha.200">
+									<Stack spacing={0}>
+										<Stack spacing="0.5rem" direction="row" align="center">
+											<Text>
+												{transaction.description !== '' ? transaction.description : transaction.category.name}
+												{transaction.installment !== '1\/1' ? ` (${transaction.installment})` : ''}
+											</Text>
+										</Stack>
 
-						<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
-							<Badge name={transaction.category.name} color={transaction.category.color?.hex_code} />
-						</Td>
+										<Stack direction="row" align="center" color="gray.400" fontSize="0.875rem">
+											{transaction.type !== 'transfer' && <Text>{`${transaction.category.name} | `}</Text>}
+											<Icon as={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.account.type)].icon} />
+											<Text>{transaction?.account.name}</Text>
+										</Stack>
 
-						<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
-							<Badge
-								name={transaction?.account.name}
-								color={transaction.account.color?.hex_code}
-								icon={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.account.type)].icon}
-							/>
-						</Td>
+										<Text color="gray.400" fontSize="0.875rem">
+											{format(new Date(transaction.date), 'dd/MM/yyyy')}
+										</Text>
+									</Stack>
+								</Td>
 
-						<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
-							<Text>{format(new Date(transaction.date), 'dd/MM/yyyy')}</Text>
-						</Td>
+								<Td
+									px="0.5rem"
+									borderColor="whiteAlpha.200"
+								>
+									<Stack>
+										<Flex flexDir="row-reverse" alignItems="center">
+											<Icon marginLeft="0.5rem" as={transaction.type === 'income' ? RiArrowUpCircleFill
+												: transaction.type === 'outcome' ? RiArrowDownCircleFill
+													: RiArrowLeftRightLine
+											} fontSize="1rem" color={transaction.type === 'income' ? 'green.500'
+												: transaction.type === 'outcome' ? 'red.500' : 'purple.300'} />
+											<Text
+												color={transaction.type === 'income' ? "green.500" : transaction.type === 'outcome' ? "red.500" : "white"}
+											>{transaction.amount.toLocaleString('pt-BR', {
+												style: 'currency',
+												currency: 'BRL',
+											})}</Text>
+										</Flex>
 
-						<Td
-							px="0.5rem"
-							borderColor="whiteAlpha.200"
-						>
-							<Flex flexDir="row-reverse" alignItems="center">
-								<Icon marginLeft="0.5rem" as={transaction.type === 'income' ? RiArrowUpCircleFill
-									: transaction.type === 'outcome' ? RiArrowDownCircleFill
-										: RiArrowLeftRightLine
-								} fontSize="1rem" color={transaction.type === 'income' ? 'green.500'
-									: transaction.type === 'outcome' ? 'red.500' : 'purple.300'} />
-								<Text
-									color={transaction.type === 'income' ? "green.500" : transaction.type === 'outcome' ? "red.500" : "white"}
-								>{transaction.amount.toLocaleString('pt-BR', {
-									style: 'currency',
-									currency: 'BRL',
-								})}</Text>
-							</Flex>
-						</Td>
+										<Flex justify="flex-end">
 
-						<Td
-							w="4rem"
-							borderColor="whiteAlpha.200"
-							h="3rem"
-							py={0}
-							px={{ base: "0.5rem", md: "1rem" }}
-						>
-							<Flex justify="flex-end">
+											{transaction.account.type === 'credit_card'
+												? <Tooltip label='Funcionalidade ainda não implementada'>
+													<Button variant="unstyled" opacity={0.3} cursor="not-allowed" p="0.1rem">
+														<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
+													</Button>
+												</Tooltip>
+												: <Button variant="unstyled" onClick={() => { openTransactionModal(transaction) }} p="0.1rem">
+													<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
+												</Button>
+											}
 
-								{transaction.account.type === 'credit_card'
-									? <Tooltip label='Funcionalidade ainda não implementada'>
-										<Button variant="unstyled" opacity={0.3} cursor="not-allowed">
-											<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
-										</Button>
-									</Tooltip>
-									: <Button variant="unstyled" onClick={() => { openTransactionModal(transaction) }}>
-										<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
-									</Button>
-								}
+											{transaction.account.type === 'credit_card'
+												? <Tooltip label='Funcionalidade ainda não implementada'>
+													<Button variant="unstyled" opacity={0.3} cursor="not-allowed" p="0.1rem">
+														<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
+													</Button>
+												</Tooltip>
+												:
+												<Button variant="unstyled" onClick={() => { deleteTransaction(transaction.id) }} p="0.1rem">
+													<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
+												</Button>
+											}
+										</Flex>
+									</Stack>
+								</Td>
+							</>
+							: <>
+								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200">
+									<Stack spacing="0.5rem" direction="row" align="center">
+										<Text>
+											{transaction.description !== '' ? transaction.description : transaction.category.name}
+											{transaction.installment !== '1\/1' ? ` (${transaction.installment})` : ''}
+										</Text>
+									</Stack>
+								</Td>
 
-								{transaction.account.type === 'credit_card'
-									? <Tooltip label='Funcionalidade ainda não implementada'>
-										<Button variant="unstyled" opacity={0.3} cursor="not-allowed">
-											<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
-										</Button>
-									</Tooltip>
-									:
-									<Button variant="unstyled" onClick={() => { deleteTransaction(transaction.id) }}>
-										<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
-									</Button>
-								}
-							</Flex>
-						</Td>
+								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
+									<Badge name={transaction.category.name} color={transaction.category.color?.hex_code} />
+								</Td>
+
+								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
+									<Badge
+										name={transaction?.account.name}
+										color={transaction.account.color?.hex_code}
+										icon={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.account.type)].icon}
+									/>
+								</Td>
+
+								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
+									<Text>{format(new Date(transaction.date), 'dd/MM/yyyy')}</Text>
+								</Td>
+
+								<Td
+									px="0.5rem"
+									borderColor="whiteAlpha.200"
+								>
+									<Flex flexDir="row-reverse" alignItems="center">
+										<Icon marginLeft="0.5rem" as={transaction.type === 'income' ? RiArrowUpCircleFill
+											: transaction.type === 'outcome' ? RiArrowDownCircleFill
+												: RiArrowLeftRightLine
+										} fontSize="1rem" color={transaction.type === 'income' ? 'green.500'
+											: transaction.type === 'outcome' ? 'red.500' : 'purple.300'} />
+										<Text
+											color={transaction.type === 'income' ? "green.500" : transaction.type === 'outcome' ? "red.500" : "white"}
+										>{transaction.amount.toLocaleString('pt-BR', {
+											style: 'currency',
+											currency: 'BRL',
+										})}</Text>
+									</Flex>
+								</Td>
+
+								<Td
+									w="4rem"
+									borderColor="whiteAlpha.200"
+									h="3rem"
+									py={0}
+									px={{ base: "0.5rem", md: "1rem" }}
+								>
+									<Flex justify="flex-end">
+
+										{transaction.account.type === 'credit_card'
+											? <Tooltip label='Funcionalidade ainda não implementada'>
+												<Button variant="unstyled" opacity={0.3} cursor="not-allowed">
+													<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
+												</Button>
+											</Tooltip>
+											: <Button variant="unstyled" onClick={() => { openTransactionModal(transaction) }}>
+												<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
+											</Button>
+										}
+
+										{transaction.account.type === 'credit_card'
+											? <Tooltip label='Funcionalidade ainda não implementada'>
+												<Button variant="unstyled" opacity={0.3} cursor="not-allowed">
+													<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
+												</Button>
+											</Tooltip>
+											:
+											<Button variant="unstyled" onClick={() => { deleteTransaction(transaction.id) }}>
+												<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
+											</Button>
+										}
+									</Flex>
+								</Td>
+							</>
+						}
 					</Tr>
 				)
 				)}
