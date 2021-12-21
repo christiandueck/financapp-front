@@ -7,9 +7,10 @@ import { SelectButton } from '../Form/SelectButton'
 interface SelectTransactionProps {
 	transanctionType: 'income' | 'outcome' | 'transfer';
 	setTransactionType: (type: string) => void;
+	disabled?: boolean
 }
 
-export function SelectTransaction({ transactionType, setTransactionType }) {
+export function SelectTransaction({ transactionType, setTransactionType, disabled }) {
 	const { activeAccounts } = useAccount()
 
 	return (
@@ -29,6 +30,7 @@ export function SelectTransaction({ transactionType, setTransactionType }) {
 					}}
 					active={transactionType === 'income'}
 					onClick={() => setTransactionType('income')}
+					disabled={disabled}
 				>Entrada</SelectButton>
 
 				<SelectButton
@@ -38,6 +40,7 @@ export function SelectTransaction({ transactionType, setTransactionType }) {
 					}}
 					active={transactionType === 'outcome'}
 					onClick={() => setTransactionType('outcome')}
+					disabled={disabled}
 				>Saída</SelectButton>
 
 				{activeAccounts?.length > 1 &&
@@ -48,6 +51,7 @@ export function SelectTransaction({ transactionType, setTransactionType }) {
 						}}
 						active={transactionType === 'transfer'}
 						onClick={() => setTransactionType('transfer')}
+						disabled={disabled}
 					>Transferência</SelectButton>
 				}
 

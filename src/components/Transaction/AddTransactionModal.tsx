@@ -132,7 +132,7 @@ export function AddTransactionModal() {
 
 				<ModalBody p="0">
 					<Stack spacing="0.75rem">
-						<SelectTransaction transactionType={transactionType} setTransactionType={setTransactionType} />
+						<SelectTransaction transactionType={transactionType} setTransactionType={setTransactionType} disabled={editTransaction === null ? false : true} />
 
 						<Input
 							name="amount"
