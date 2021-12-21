@@ -25,7 +25,6 @@ type AddAccountFormData = {
 const addAccountFormSchema = yup.object().shape({
 	credit_card: yup.number(),
 	name: yup.string().required('Nome é obrigatório'),
-	balance: yup.number().transform(value => (isNaN(value) ? 0 : value)),
 	invoice_closing_date: yup.string().when('credit_card', {
 		is: 1,
 		then: yup.number().transform(value => (isNaN(value) ? 1 : value)).min(1, 'O valor precisa ser entre 1 e 31').max(31, 'O valor precisa ser entre 1 e 31')
@@ -47,6 +46,8 @@ export function AddAccountModal() {
 	})
 
 	const handleSaveAccount: SubmitHandler<AddAccountFormData> = async (values) => {
+		console.log(values)
+
 		const account = {
 			type: accountType,
 			name: values.name,
