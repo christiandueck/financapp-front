@@ -92,7 +92,7 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 									<Stack spacing={0}>
 										<Stack spacing="0.5rem" direction="row" align="center">
 											<Text>
-												{transaction.description !== '' ? transaction.description : transaction.category.name}
+												{transaction.description !== '' ? transaction.description : transaction.type === 'transfer' ? "Transferência" : transaction.category.name}
 												{transaction.installment !== '1\/1' ? ` (${transaction.installment})` : ''}
 											</Text>
 										</Stack>
@@ -101,6 +101,12 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 											{transaction.type !== 'transfer' && <Text>{`${transaction.category.name} | `}</Text>}
 											<Icon as={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.account.type)].icon} />
 											<Text>{transaction?.account.name}</Text>
+
+											{transaction.type === 'transfer' && <Text>→</Text>}
+											{transaction.type === 'transfer' &&
+												<Icon as={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.destiny_account.type)].icon} />
+											}
+											{transaction.type === 'transfer' && <Text>{transaction?.destiny_account.name}</Text>}
 										</Stack>
 
 										<Text color="gray.400" fontSize="0.875rem">
@@ -157,26 +163,44 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 								</Td>
 							</>
 							: <>
-								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200">
+								<Td
+									colSpan={transaction.type === 'transfer' ? 3 : 1}
+									px={{ base: "0.5rem", md: "1rem", lg: "2rem" }}
+									borderColor="whiteAlpha.200"
+								>
 									<Stack spacing="0.5rem" direction="row" align="center">
 										<Text>
-											{transaction.description !== '' ? transaction.description : transaction.category.name}
+											{transaction.description !== '' ? transaction.description : transaction.type === 'transfer' ? "Transferência" : transaction.category.name}
 											{transaction.installment !== '1\/1' ? ` (${transaction.installment})` : ''}
 										</Text>
+
+										{transaction.type === 'transfer' &&
+											<Stack direction="row" align="center" pl="0.5rem">
+												<Icon as={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.account.type)]?.icon || null} />
+												<Text fontWeight="700">{transaction?.account.name}</Text>
+												<Text>→</Text>
+												<Icon as={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.destiny_account?.type)]?.icon || null} />
+												<Text fontWeight="700">{transaction?.destiny_account?.name}</Text>
+											</Stack>
+										}
 									</Stack>
 								</Td>
 
-								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
-									<Badge name={transaction.category.name} color={transaction.category.color?.hex_code} />
-								</Td>
+								{transaction.type !== 'transfer' &&
+									<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
+										<Badge name={transaction.category.name} color={transaction.category.color?.hex_code} />
+									</Td>
+								}
 
-								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
-									<Badge
-										name={transaction?.account.name}
-										color={transaction.account.color?.hex_code}
-										icon={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.account.type)].icon}
-									/>
-								</Td>
+								{transaction.type !== 'transfer' &&
+									<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
+										<Badge
+											name={transaction?.account.name}
+											color={transaction.account.color?.hex_code}
+											icon={accountTypes[accountTypes.map(e => e.type).indexOf(transaction.account.type)].icon}
+										/>
+									</Td>
+								}
 
 								<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200" textAlign="center">
 									<Text>{format(new Date(transaction.date), 'dd/MM/yyyy')}</Text>

@@ -38,6 +38,7 @@ export type Transaction = {
 	installment?: string;
 	category: Category;
 	account: Account;
+	destiny_account: Account | null;
 }
 
 export const TransactionTypes = [
@@ -94,6 +95,7 @@ export function TransactionProvider(props: TransactionProvider) {
 					...transaction,
 					category: categories[categories.map(e => e.id).indexOf(transaction?.category?.id)],
 					account: accounts[accounts.map(e => e.id).indexOf(transaction?.account?.id)],
+					destiny_account: accounts[accounts.map(e => e.id).indexOf(transaction?.destiny_account?.id)] || null,
 				}
 			})
 			setTransactions(mappedTransactions)
