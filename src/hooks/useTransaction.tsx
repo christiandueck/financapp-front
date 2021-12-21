@@ -29,11 +29,13 @@ type DashboardData = {
 
 export type Transaction = {
 	id: number;
+	payment_id: number;
 	description: string;
 	type: 'income' | 'outcome' | 'transfer';
 	amount: number;
 	date: Date;
 	installments: number;
+	installment?: string;
 	category: Category;
 	account: Account;
 }

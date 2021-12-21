@@ -1046,6 +1046,11 @@
     "@typescript-eslint/types" "4.27.0"
     eslint-visitor-keys "^2.0.0"
 
+"@uselessdev/datepicker@^1.0.0":
+  version "1.0.0"
+  resolved "https://registry.yarnpkg.com/@uselessdev/datepicker/-/datepicker-1.0.0.tgz#0f9c73506ef40d99ce92e0e1b7dab511bb816c35"
+  integrity sha512-fL6WrkhXXiLxGSm9oFsZuAhAuerWZ0yZrvsFr6XuPVk9Etvfm0MFSuKD2axi/aSypsK6fzIIsqkemxmbr6IahQ==
+
 acorn-jsx@^5.3.1:
   version "5.3.1"
   resolved "https://registry.yarnpkg.com/acorn-jsx/-/acorn-jsx-5.3.1.tgz#fc8661e11b7ac1539c47dbfea2e72b3af34d267b"

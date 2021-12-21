@@ -12,6 +12,9 @@ import { useEffect, useState } from "react"
 import { format } from 'date-fns'
 import { api } from "../../services/api"
 import { useAccount } from "../../hooks/useAccount"
+import { Calendar, CalendarDate } from '@uselessdev/datepicker'
+import { ptBR } from 'date-fns/locale'
+import { DatePicker } from "../Form/DatePicker"
 
 type AddTransactionFormData = {
 	amount: string;
@@ -33,6 +36,7 @@ export function AddTransactionModal() {
 
 	const [transactionType, setTransactionType] = useState<'income' | 'outcome' | 'transfer'>('income')
 	const [amount, setAmount] = useState<number>(0)
+	const [date, setDate] = useState<CalendarDate>(new Date())
 	const [paymentDate, setPaymentDate] = useState<string>()
 	const [installments, setInstallments] = useState<number>(1)
 	const [categoryId, setCategoryId] = useState<number>()
@@ -40,16 +44,30 @@ export function AddTransactionModal() {
 	const [destinyAccountId, setDestinyAccountId] = useState<number>()
 
 	const handleSaveTransaction: SubmitHandler<AddTransactionFormData> = async (values) => {
-		const transaction = {
-			type: transactionType,
-			amount: amount,
-			date: format(new Date(values.date), 'yyyy-MM-dd'),
-			invoice_first_charge: paymentDate || format(new Date(values.date), 'yyyy-MM-dd'),
-			installments: installments || 1,
-			category_id: categoryId,
-			origin_account_id: originAccountId || activeAccounts[0].id,
-			destiny_account_id: destinyAccountId || null,
-			description: values.description,
+		let transaction;
+
+		if (transactionType === 'transfer') {
+			transaction = {
+				type: transactionType,
+				amount: amount,
+				date: format(date, 'yyyy-MM-dd'),
+				invoice_first_charge: paymentDate || format(date, 'yyyy-MM-dd'),
+				installments: 1,
+				origin_account_id: originAccountId || activeAccounts[0].id,
+				destiny_account_id: destinyAccountId,
+				description: values.description,
+			}
+		} else {
+			transaction = {
+				type: transactionType,
+				amount: amount,
+				date: format(date, 'yyyy-MM-dd'),
+				invoice_first_charge: paymentDate || format(date, 'yyyy-MM-dd'),
+				installments: installments || 1,
+				category_id: categoryId,
+				origin_account_id: originAccountId || activeAccounts[0].id,
+				description: values.description,
+			}
 		}
 
 		if (editTransaction !== null) {
@@ -77,15 +95,17 @@ export function AddTransactionModal() {
 	useEffect(() => {
 		if (editTransaction !== null) {
 			setTransactionType(editTransaction.type)
-			setValue('date', new Date(editTransaction.date))
+			setDate(new Date(editTransaction.date))
 		} else {
 			setTransactionType('income')
-			setValue('date', new Date())
+			setDate(new Date())
+			setValue('amount', '')
+			setValue('description', '')
 		}
 	}, [isOpenTransactionModal])
 
 	return (
-		<Modal isOpen={isOpenTransactionModal} onClose={closeTransactionModal} isCentered size="xl">
+		<Modal isOpen={isOpenTransactionModal} onClose={closeTransactionModal} isCentered size="xl" scrollBehavior="inside">
 			<ModalOverlay />
 			<ModalContent
 				bg="gray.800"
@@ -126,13 +146,11 @@ export function AddTransactionModal() {
 							{...register('amount')}
 						/>
 
-						<Input
-							name="date"
-							type="date"
+						<DatePicker
 							label={`Data da ${TransactionTypes.filter((item) => (item.type === transactionType))[0].label}`}
+							date={date}
+							setDate={setDate}
 							icon={RiCalendarLine}
-							error={errors.date}
-							{...register('date')}
 						/>
 
 						{transactionType !== 'income' &&

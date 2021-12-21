@@ -1,4 +1,4 @@
-import { Stack, Flex, Text, Icon, Table, Thead, Tbody, Tr, Th, Td, Circle, Button } from '@chakra-ui/react'
+import { Stack, Flex, Text, Icon, Table, Thead, Tbody, Tr, Th, Td, Button, Tooltip } from '@chakra-ui/react'
 import { RiEditLine, RiDeleteBin2Line, RiArrowDownCircleFill, RiArrowUpCircleFill, RiArrowLeftRightLine } from 'react-icons/ri'
 import { useColor } from '../../hooks/useColor';
 import { Transaction, useTransaction } from '../../hooks/useTransaction';
@@ -88,7 +88,10 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 						{console.log(transaction)}
 						<Td px={{ base: "0.5rem", md: "1rem", lg: "2rem" }} borderColor="whiteAlpha.200">
 							<Stack spacing="0.5rem" direction="row" align="center">
-								<Text>{transaction.description !== '' ? transaction.description : transaction.category.name}</Text>
+								<Text>
+									{transaction.description !== '' ? transaction.description : transaction.category.name}
+									{transaction.installment !== '1\/1' ? ` (${transaction.installment})` : ''}
+								</Text>
 							</Stack>
 						</Td>
 
@@ -135,13 +138,29 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 							px={{ base: "0.5rem", md: "1rem" }}
 						>
 							<Flex justify="flex-end">
-								<Button variant="unstyled" onClick={() => { openTransactionModal(transaction) }}>
-									<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
-								</Button>
 
-								<Button variant="unstyled" onClick={() => { deleteTransaction(transaction.id) }}>
-									<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
-								</Button>
+								{transaction.account.type === 'credit_card'
+									? <Tooltip label='Funcionalidade ainda não implementada'>
+										<Button variant="unstyled" opacity={0.3} cursor="not-allowed">
+											<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
+										</Button>
+									</Tooltip>
+									: <Button variant="unstyled" onClick={() => { openTransactionModal(transaction) }}>
+										<Icon as={RiEditLine} w="1.5rem" h="1.5rem" />
+									</Button>
+								}
+
+								{transaction.account.type === 'credit_card'
+									? <Tooltip label='Funcionalidade ainda não implementada'>
+										<Button variant="unstyled" opacity={0.3} cursor="not-allowed">
+											<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
+										</Button>
+									</Tooltip>
+									:
+									<Button variant="unstyled" onClick={() => { deleteTransaction(transaction.id) }}>
+										<Icon as={RiDeleteBin2Line} w="1.5rem" h="1.5rem" />
+									</Button>
+								}
 							</Flex>
 						</Td>
 					</Tr>

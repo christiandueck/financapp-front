@@ -1,6 +1,7 @@
 import { Stack, Flex, Text } from '@chakra-ui/react'
 import { useState } from 'react'
 import { RiArrowDownCircleFill, RiArrowLeftRightLine, RiArrowUpCircleFill } from 'react-icons/ri'
+import { useAccount } from '../../hooks/useAccount'
 import { SelectButton } from '../Form/SelectButton'
 
 interface SelectTransactionProps {
@@ -9,6 +10,8 @@ interface SelectTransactionProps {
 }
 
 export function SelectTransaction({ transactionType, setTransactionType }) {
+	const { activeAccounts } = useAccount()
+
 	return (
 		<Stack spacing="0">
 			<Text fontSize="sm" color="gray.400" pl="0.5rem">TIPO DE TRANSAÇÃO:</Text>
@@ -37,14 +40,16 @@ export function SelectTransaction({ transactionType, setTransactionType }) {
 					onClick={() => setTransactionType('outcome')}
 				>Saída</SelectButton>
 
-				<SelectButton
-					icon={{
-						icon: RiArrowLeftRightLine,
-						color: "purple.300"
-					}}
-					active={transactionType === 'transfer'}
-					onClick={() => setTransactionType('transfer')}
-				>Transferência</SelectButton>
+				{activeAccounts?.length > 1 &&
+					<SelectButton
+						icon={{
+							icon: RiArrowLeftRightLine,
+							color: "purple.300"
+						}}
+						active={transactionType === 'transfer'}
+						onClick={() => setTransactionType('transfer')}
+					>Transferência</SelectButton>
+				}
 
 			</Flex>
 		</Stack>
