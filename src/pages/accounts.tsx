@@ -93,7 +93,7 @@ export default function Accounts() {
 							Não foi possível carregar as contas.
 						</Text>
 					</Flex>
-				) : accounts.length < 1 ?
+				) : accounts?.length < 1 ?
 					<Text>Nenhuma conta cadastrada.</Text>
 					:
 					(

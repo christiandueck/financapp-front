@@ -11,9 +11,10 @@ interface SelectAccountTypeProps {
 	types: AccountType[];
 	accountType: 'bank' | 'credit_card' | 'cash' | string;
 	setAccountType: (type: string) => void;
+	disabled?: boolean
 }
 
-export function SelectAccountType({ name, label, types, accountType, setAccountType }: SelectAccountTypeProps) {
+export function SelectAccountType({ name, label, types, accountType, setAccountType, disabled = false }: SelectAccountTypeProps) {
 	const [showList, setShowList] = useState(false)
 
 	function toggleShowList() {
@@ -45,9 +46,16 @@ export function SelectAccountType({ name, label, types, accountType, setAccountT
 				borderRadius="0.5rem"
 				overflow="hidden"
 				boxShadow={showList ? "0 0 0 2px var(--chakra-colors-green-500)" : "none"}
+				opacity={disabled ? 0.5 : 1}
 			>
 				<Flex flexDir="column" w="100%">
-					<Flex h="2.5rem" align="center" justifyContent="space-between" onClick={toggleShowList} cursor="pointer">
+					<Flex
+						h="2.5rem"
+						align="center"
+						justifyContent="space-between"
+						onClick={disabled ? () => { } : toggleShowList}
+						cursor={disabled ? "not-allowed" : "pointer"}
+					>
 						<HStack align="center" spacing="1.5rem">
 							<Center
 								h="2rem"

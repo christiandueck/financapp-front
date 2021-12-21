@@ -61,7 +61,9 @@ export function AccountProvider(props: AccountProvider) {
 			)
 			setAccounts(sortedAccounts)
 			setActiveAccounts(sortedAccounts.filter((item) => (item.active === true)))
-		})
+		}).catch((error) => (
+			setAccounts([])
+		))
 	}
 
 	function openAccountModal(account = null) {
@@ -77,7 +79,7 @@ export function AccountProvider(props: AccountProvider) {
 
 	async function deactivateAccount(AccountId?: number) {
 		const id = AccountId ? AccountId : editAccount.id
-		await api.delete(`account/delete/${id}`)
+		await api.delete(`account/delete/${id}`).catch((error) => (null))
 		closeAccountModal()
 	}
 

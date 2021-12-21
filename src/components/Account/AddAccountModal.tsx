@@ -23,7 +23,17 @@ type AddAccountFormData = {
 }
 
 const addAccountFormSchema = yup.object().shape({
-	name: yup.string().required('Nome é obrigatório')
+	credit_card: yup.number(),
+	name: yup.string().required('Nome é obrigatório'),
+	balance: yup.number().transform(value => (isNaN(value) ? 0 : value)),
+	invoice_closing_date: yup.string().when('credit_card', {
+		is: 1,
+		then: yup.number().transform(value => (isNaN(value) ? 1 : value)).min(1, 'O valor precisa ser entre 1 e 31').max(31, 'O valor precisa ser entre 1 e 31')
+	}),
+	invoice_due_date: yup.string().when('credit_card', {
+		is: 1,
+		then: yup.number().transform(value => (isNaN(value) ? 1 : value)).min(1, 'O valor precisa ser entre 1 e 31').max(31, 'O valor precisa ser entre 1 e 31')
+	}),
 })
 
 export function AddAccountModal() {
@@ -41,8 +51,8 @@ export function AddAccountModal() {
 			type: accountType,
 			name: values.name,
 			balance: values.balance ? Number(values.balance.replace(".", "").replace(",", ".")) : 0,
-			invoice_due_date: values.invoice_due_date ? Number(values.invoice_due_date.replace(".", "").replace(",", ".")) : 0,
-			invoice_closing_date: values.invoice_closing_date ? Number(values.invoice_closing_date.replace(".", "").replace(",", ".")) : 0,
+			invoice_due_date: Number(values.invoice_due_date) === 0 || values.invoice_due_date === '' ? 1 : Number(values.invoice_due_date),
+			invoice_closing_date: Number(values.invoice_closing_date) === 0 || values.invoice_closing_date === '' ? 1 : Number(values.invoice_closing_date),
 			color_id: activeColor.id,
 		}
 
@@ -56,7 +66,7 @@ export function AddAccountModal() {
 			})
 		} else {
 			await api.post('account/insert', account).catch((error) => {
-				toast.error("Categoria já cadastrada!")
+				toast.error("Conta já cadastrada!")
 			})
 		}
 
@@ -86,8 +96,8 @@ export function AddAccountModal() {
 			setActiveColor(editAccount?.color)
 			setValue('name', editAccount?.name)
 			setValue('balance', editAccount?.balance.toLocaleString('pt-BR', { minimumFractionDigits: 2 }))
-			setValue('invoice_closing_date', editAccount?.invoice_closing_date)
-			setValue('invoice_due_date', editAccount?.invoice_due_date)
+			setValue('invoice_closing_date', Number(editAccount?.invoice_closing_date))
+			setValue('invoice_due_date', Number(editAccount?.invoice_due_date))
 		} else {
 			setAccountType(accountTypes[0].type)
 			setActiveColor(colors ? colors[0] : null)
@@ -133,9 +143,17 @@ export function AddAccountModal() {
 
 				<ModalBody p="0">
 					<Stack spacing="1.5rem">
+						<input type="hidden" name="credit_card" value={accountType === 'credit_card' ? 1 : 0} {...register('credit_card')} />
 
 						<FormControl>
-							<SelectAccountType name="type" label="Tipo de conta" types={accountTypes} accountType={accountType} setAccountType={setAccountType} />
+							<SelectAccountType
+								name="type"
+								label="Tipo de conta"
+								types={accountTypes}
+								accountType={accountType}
+								setAccountType={setAccountType}
+								disabled={editAccount === null ? false : true}
+							/>
 						</FormControl>
 
 						<Input name="name" type="text" label="Nome" error={errors.name} {...register('name')} />
