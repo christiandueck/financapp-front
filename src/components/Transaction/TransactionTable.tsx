@@ -85,7 +85,6 @@ export function TransactionTable({ isMobile }: TransactionTableProps) {
 				{transactions?.map(transaction =>
 				(
 					<Tr key={transaction.id}>
-						{console.log(transaction)}
 						{isMobile
 							? <>
 								<Td p="0.5rem" borderColor="whiteAlpha.200">
