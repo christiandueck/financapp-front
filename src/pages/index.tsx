@@ -1,4 +1,4 @@
-import { Center, Flex, Stack, Img, Button } from '@chakra-ui/react'
+import { Center, Flex, Stack, Img, Button, Tooltip } from '@chakra-ui/react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 import * as yup from 'yup'
 import { yupResolver } from '@hookform/resolvers/yup'
@@ -129,7 +129,11 @@ export default function Home() {
 				</Flex>
 
 				<Flex w="100%" justify="space-between">
-					<NavLink href="/user/password/recover">Recuperar senha</NavLink>
+					<Tooltip label="Funcionalidade ainda não implementada">
+						<Flex cursor="not-allowed" opacity={0.5}>
+							<NavLink href=''>Recuperar senha</NavLink>
+						</Flex>
+					</Tooltip>
 					<NavLink href="/user/register">Novo cadastro</NavLink>
 				</Flex>
 			</Stack>
