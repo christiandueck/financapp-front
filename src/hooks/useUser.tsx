@@ -11,6 +11,7 @@ type UserContextData = {
 	user: User | null;
 	signIn: (token: string, user: User) => void;
 	signOut: () => void;
+	getUser: () => void;
 }
 
 export const UserContext = createContext({} as UserContextData)
@@ -35,17 +36,21 @@ export function UserProvider(props: UserProvider) {
 		localStorage.removeItem('@financapp:token')
 	}
 
+	function getUser() {
+		api.get('/user/get').then(response => {
+			setUser(response.data.message)
+		}).catch((error) => {
+			signOut()
+		})
+	}
+
 	useEffect(() => {
 		const token = localStorage.getItem('@financapp:token')
 
 		if (token) {
 			api.defaults.headers.common.authorization = `Bearer ${token}`
 
-			api.get('/user/get').then(response => {
-				setUser(response.data.message)
-			}).catch((error) => {
-				signOut()
-			})
+			getUser();
 		}
 	}, [])
 
@@ -53,7 +58,8 @@ export function UserProvider(props: UserProvider) {
 		<UserContext.Provider value={{
 			user,
 			signIn,
-			signOut
+			signOut,
+			getUser
 		}}>
 			{props.children}
 		</UserContext.Provider>
