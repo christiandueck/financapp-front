@@ -113,7 +113,7 @@ export default function Categories() {
 							Não foi possível carregar as categorias.
 						</Text>
 					</Flex>
-				) : categories.length < 1 ?
+				) : categories?.length < 1 ?
 					<Text>Nenhuma categoria cadastrada.</Text>
 					: (
 						<CategoryTable data={categories} categoryType={categoryType} activeCategories={activeCategories} isMobile={isMobile} />

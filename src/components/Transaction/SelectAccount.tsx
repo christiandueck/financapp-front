@@ -74,6 +74,7 @@ export function SelectAccount({
 
 	function changeAccount(account: Account) {
 		setAccount(account)
+		setAccountId(account.id)
 		setShowList(false)
 	}
 
@@ -89,7 +90,7 @@ export function SelectAccount({
 	}, [installment])
 
 	useEffect(() => {
-		setAccountId(account?.id || activeAccounts[0]?.id || null)
+		setAccountId(account?.id || null)
 		setInvoicePaymentDate(invoiceDate())
 	}, [account])
 

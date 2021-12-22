@@ -56,7 +56,7 @@ export function AddTransactionModal() {
 				invoice_first_charge: paymentDate || format(date, 'yyyy-MM-dd'),
 				installments: 1,
 				category_id: categoryId,
-				origin_account_id: originAccountId || activeAccounts[0].id,
+				origin_account_id: originAccountId,
 				destiny_account_id: destinyAccountId,
 				description: values.description,
 			}
@@ -68,10 +68,12 @@ export function AddTransactionModal() {
 				invoice_first_charge: paymentDate || format(date, 'yyyy-MM-dd'),
 				installments: installments || 1,
 				category_id: categoryId,
-				origin_account_id: originAccountId || activeAccounts[0].id,
+				origin_account_id: originAccountId || destinyAccountId,
 				description: values.description,
 			}
 		}
+
+		console.log(transaction)
 
 		if (editTransaction !== null) {
 			await api.post(`transaction/update/${editTransaction.id}`, {
@@ -97,6 +99,10 @@ export function AddTransactionModal() {
 	}, [watch('amount')])
 
 	useEffect(() => {
+		console.log(originAccountId)
+	}, [originAccountId])
+
+	useEffect(() => {
 		if (editTransaction !== null) {
 			setTransactionType(editTransaction.type)
 			setDate(new Date(editTransaction.date))
@@ -110,7 +116,7 @@ export function AddTransactionModal() {
 			setDate(new Date())
 			setValue('amount', '')
 			setValue('description', '')
-			setOriginAccountId(activeAccounts ? activeAccounts[0].id : null)
+			setOriginAccountId(activeAccounts ? activeAccounts[0]?.id : null)
 			setCategoryId(activeCategories ? activeCategories.filter(category => category.type === transactionType)[0]?.id : null)
 		}
 	}, [isOpenTransactionModal])
@@ -182,7 +188,7 @@ export function AddTransactionModal() {
 								label="Conta de destino"
 								transactionAmount={amount}
 								accountId={transactionType === 'transfer' ? destinyAccountId : originAccountId}
-								setAccountId={setDestinyAccountId}
+								setAccountId={transactionType === 'transfer' ? setDestinyAccountId : setOriginAccountId}
 								setInstallmentsCount={setInstallments}
 								setPaymentDate={setPaymentDate}
 								filterAccountId={transactionType === 'transfer' ? originAccountId : null}
